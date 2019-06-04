@@ -1,0 +1,1280 @@
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 4.3.1">
+
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Matt Sams">
+
+  
+  
+  
+    
+  
+  <meta name="description" content="A walkthrough on acute:chronic workload in R">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/2018-06-09-r-acwr-intro/r-acwr-intro/">
+
+  
+
+
+  
+
+  
+  
+  
+  <meta name="theme-color" content="hsl(339, 90%, 68%)">
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.0/css/all.css" integrity="sha384-aOkxzJ5uQz7WBObEZcHvV5JvRW3TUc2rNPA7pe3AwnsUohiw1Vj2Rgx2KSOkF5+h" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css" crossorigin="anonymous" title="hl-light">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css" crossorigin="anonymous" title="hl-dark" disabled>
+      
+    
+
+    
+
+    
+
+  
+
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Montserrat:400,700|Roboto:400,400italic,700|Roboto+Mono">
+  
+
+  
+  
+  
+  <link rel="stylesheet" href="/css/academic.min.86be757f1f4d547e884bf0757b242687.css">
+
+  
+
+  
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-121320929-1', 'auto');
+      
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+  
+
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/2018-06-09-r-acwr-intro/r-acwr-intro/">
+
+  
+  
+  
+  
+    
+  
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@DrMattSams">
+  <meta property="twitter:creator" content="@DrMattSams">
+  
+  <meta property="og:site_name" content="Sams Performance Training">
+  <meta property="og:url" content="/post/2018-06-09-r-acwr-intro/r-acwr-intro/">
+  <meta property="og:title" content="Leveraging R to Calculate Acute:Chronic Workload Ratios | Sams Performance Training">
+  <meta property="og:description" content="A walkthrough on acute:chronic workload in R"><meta property="og:image" content="/post/2018-06-09-r-acwr-intro/r-acwr-intro/featured.png">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2018-06-09T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2019-06-03T23:45:05-07:00">
+  
+
+  
+
+
+  
+
+
+
+
+
+  <title>Leveraging R to Calculate Acute:Chronic Workload Ratios | Sams Performance Training</title>
+
+</head>
+
+
+<body id="top" data-spy="scroll" data-target="#TableOfContents" data-offset="71" class="dark">
+
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        <input name="q" id="search-query" placeholder="Search..." autocapitalize="off"
+        autocomplete="off" autocorrect="off" role="textbox" spellcheck="false" type="search">
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+
+  
+<nav class="navbar navbar-light fixed-top navbar-expand-lg py-0" id="navbar-main">
+  <div class="container">
+
+    
+      <a class="navbar-brand" href="/">Sams Performance Training</a>
+      
+      <button type="button" class="navbar-toggler" data-toggle="collapse"
+              data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+        <span><i class="fas fa-bars"></i></span>
+      </button>
+      
+
+    
+    <div class="collapse navbar-collapse" id="navbar">
+
+      
+      
+      <ul class="navbar-nav mr-auto">
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#posts"><span>Posts</span></a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        
+        
+        
+        
+        
+        
+          
+          
+          
+            
+          
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link " href="/#about"><span>About Me</span></a>
+        </li>
+
+        
+        
+
+      
+      </ul>
+      <ul class="navbar-nav ml-auto">
+      
+
+        
+
+        
+        <li class="nav-item">
+          <a class="nav-link js-search" href="#"><i class="fas fa-search" aria-hidden="true"></i></a>
+        </li>
+        
+
+        
+
+        
+        <li class="nav-item">
+          <a class="nav-link js-dark-toggle" href="#"><i class="fas fa-moon" aria-hidden="true"></i></a>
+        </li>
+        
+
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+  <article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+  
+  
+<div class="article-container pt-3">
+  <h1 itemprop="name">Leveraging R to Calculate Acute:Chronic Workload Ratios</h1>
+
+  
+
+  
+    
+
+
+
+<meta content="2018-06-09 00:00:00 &#43;0000 UTC" itemprop="datePublished">
+<meta content="2019-06-03 23:45:05 -0700 MST" itemprop="dateModified">
+
+<div class="article-metadata">
+
+  
+  
+
+  
+  <span class="article-date">
+    
+    
+      
+          Last updated on
+      
+    
+    <time>Jun 3, 2019</time>
+  </span>
+  
+
+  
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    18 min read
+  </span>
+  
+
+  
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fas fa-folder"></i>
+    <a href="/categories/r/">R</a></span>
+  
+
+  
+    
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=Leveraging%20R%20to%20Calculate%20Acute%3aChronic%20Workload%20Ratios&amp;url=%2fpost%2f2018-06-09-r-acwr-intro%2fr-acwr-intro%2f"
+         target="_blank" rel="noopener">
+        <i class="fab fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2f2018-06-09-r-acwr-intro%2fr-acwr-intro%2f"
+         target="_blank" rel="noopener">
+        <i class="fab fa-facebook-f"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2f2018-06-09-r-acwr-intro%2fr-acwr-intro%2f&amp;title=Leveraging%20R%20to%20Calculate%20Acute%3aChronic%20Workload%20Ratios"
+         target="_blank" rel="noopener">
+        <i class="fab fa-linkedin-in"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=Leveraging%20R%20to%20Calculate%20Acute%3aChronic%20Workload%20Ratios&amp;body=%2fpost%2f2018-06-09-r-acwr-intro%2fr-acwr-intro%2f">
+        <i class="fas fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+    
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+<div class="btn-links mb-3">
+  
+  
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+<button type="button" class="btn btn-outline-primary my-1 mr-1 js-cite-modal"
+        data-filename="/post/2018-06-09-r-acwr-intro/r-acwr-intro/1-refs.bib">
+  Cite
+</button>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+
+  
+</div>
+
+
+
+  <div class="article-container">
+
+    <div class="article-style" itemprop="articleBody">
+      
+
+<div id="TOC">
+<ul>
+<li><a href="#acutechronic-workload-ratios">Acute:Chronic Workload Ratios?</a></li>
+<li><a href="#an-extremely-hot-topic">An Extremely Hot Topic</a></li>
+<li><a href="#calculating-acwr-in-r">Calculating ACWR in R</a><ul>
+<li><a href="#the-data">The Data</a></li>
+</ul></li>
+<li><a href="#more-than-one-way-to-skin-a-cat">More Than One Way to Skin a Cat</a></li>
+<li><a href="#coupled-vs.-uncoupled">Coupled vs. Uncoupled</a></li>
+<li><a href="#wrapping-up">Wrapping Up</a></li>
+<li><a href="#code-recap">Code Recap</a></li>
+<li><a href="#references">References</a></li>
+</ul>
+</div>
+
+<div id="acutechronic-workload-ratios" class="section level2">
+<h2>Acute:Chronic Workload Ratios?</h2>
+<p><img src="Confused-Gandalf.jpg" /></p>
+<p>If you’ve been keeping up with the athlete workload monitoring world, you’ve probably heard of the concept of acute:chronic workload ratios (ACWR). In case you haven’t, the concept is relatively simple: how does the recently accumulated training load for an athlete (typically the last 3 - 7 days) compare to their chronic accumulation of training load (previous 3 - 6 weeks of training)? We can create a rolling average of the athlete’s acute and chronic workload values and then divide the acute value by the chronic value to calculate an ACWR. These workloads can come from both external (balls pitched, distance travelled, etc.) and internal (session RPE, heart rate TRIMP, etc.) measures of training load <span class="citation">[<a href="#ref-Ehrmann_2016">2</a>,<a href="#ref-Hulin_2013">4</a>,<a href="#ref-Hulin_2015">5</a>]</span>.</p>
+<p>ACWR values provide a very intuitive snapshot of the training stress being experienced by the athlete and can be used to describe the “preparedness” of the athlete–that is, the relationship between their “fitness” and accumulated fatigue (see <span class="citation">[<a href="#ref-DeWeese_2015">1</a>]</span>). Normal training produces both adaptations in the athlete’s fitness qualities and accumulated fatigue. Unfortunately, fatigue tends to mask complete expression of fitness qualities, so we want to avoid states of high fatigue when the athletes need to produce. Similarly, high levels of fatigue increase injury risk (although recent research <span class="citation">[<a href="#ref-Malone_2018">7</a>]</span> has highlighted that the relationship is a bit more complicated than that), so we need to be cognizant of our athletes’ fatigue states during the planning and programming process.</p>
+<p>Like I said, we can use an athlete’s ACWR value to approximate their preparedness, with their acute workload representing “fatigue” and their chronic workload representing “fitness.” An ACWR ~ 1 represents training at a “normal” level, whereas values &gt; 1 and &lt; 1 represent supranormal and below-normal training, respectively. It isn’t necessarily wrong for the athlete’s ACWR value to move into either range; things only become problematic when the athlete is over-fatigued (extremely high ACWR or extended periods &gt; 1) or under-prepared for the rigors of competition (extended periods of detraining / ACWR values &lt; 1). Typically, the “sweet spot” for ACWR is somewhere between 0.8 to 1.5 (the red lines in the plots below). Feel free to check out <span class="citation">[<a href="#ref-Gabbett_2016">3</a>]</span> for a much deeper conversation on this topic.</p>
+<p><img src="tl-snip.png" /></p>
+<p>Plotting an athlete’s ACWR alongside their daily and weekly training loads can give us an at-a-glance idea of whether our training loads have been appropriate. In the moment, we can use this data along with other monitoring data (e.g. jumps, questionnaires) to modify an athlete’s training. Retrospectively, we can leverage ACWRs and other monitoring data to understand what went wrong (no program is ever perfect) and how we can improve our training program in subsequent seasons. For instance, in the image above it should be pretty clear this athlete’s load profile is the opposite of what we want–a dense pre-season gives way to drastically reduced training loads during non-conference play that result in de-training. As he enters conference play, several double headers and a dense practice schedule (along with some punishment sessions for poor performance…and appearing tired 🤔) lead to a spike in his ACWR followed by an extended period &gt; 1. His load is reduced in an attempt to manage his fatigue from the punishment…week, but he’s hit with another large spike in training (another punishment session) and a heavy week of training leading into the conference tournament. The team lost in the first round.</p>
+<p>It probably wouldn’t surprise you to know that this athlete’s jumps fell during pre-season, rose during non-conference play, then <em>plummeted</em> during conference play and prior to the conference tournament. His mood questionnaire followed a similar pattern. I wasn’t working with this team at the time, so the best I can do is provide feedback during the planning phase for the next season. More on what that feedback might look like in another blog post. Today, we’re going to stay focused on ACWRs.</p>
+</div>
+<div id="an-extremely-hot-topic" class="section level2">
+<h2>An Extremely Hot Topic</h2>
+<p>While the use of ACWR values in athlete monitoring has become very popular in recent years, some recent papers have highlighted the shortcomings of the original ACWR calculation. First, fitness/fatigue degradation aren’t linear–they instead decline in a nonlinear fashion, with fatigue decaying at a faster rate than fitness <span class="citation">[<a href="#ref-DeWeese_2015">1</a>,<a href="#ref-Murray_2016">8</a>]</span>. Further, the original ACWR calculation assigned the same relative weight to all training load values in both the acute and chronic rolling windows (that is, the load experienced yesterday carries the same weight as a training session from four weeks ago), when it stands to reason that more recently accumulated training will have a greater impact on an athlete’s fitness and fatigue. Enter exponentially-weighted moving averages (EWMA), where a decay function is applied to give greater weight to recently-completed training. At least one paper <span class="citation">[<a href="#ref-Murray_2016">8</a>]</span> has shown greater sensitivity for EWMA to detect elevated injury risk when compared to the traditional moving average approach.</p>
+<p>A second hot topic as of late is “mathematical coupling” of the acute and chronic workload values. In case you’re scratching your head like I was the first time I saw the term “mathematical coupling” (I haven’t had a math class in 11 years…and we won’t get started on my quantitative reasoning score on the GRE), <a href="https://en.wikipedia.org/wiki/Coupling_(probability)" target="_blank">Wikipedia</a> has a pretty good explanation of the concept. Basically, by including the acute workload window (the previous 3 - 7 days) in the chronic workload window (the last 21 - 28 days), we create a spurious correlation between the two values that mis-represents the athlete’s “true” ACWR <span class="citation">[<a href="#ref-Lolli_2017">6</a>]</span>. For ACWR &lt; 1, coupled ACWR values are greater than their uncoupled counterparts. The ratios are the same at a value of 1, but uncoupled values become greater than coupled values when discussing ACWR &gt; 1. Windt and Gabbett <span class="citation">[<a href="#ref-Windt_2018">9</a>]</span> argue that while coupling or uncoupling the acute and chronic windows will lead to different interpretations of the ACWR,</p>
+<p><img src="Coupled-vs-uncoupled.png" /></p>
+<p>the fundamental idea is the same: we should avoid large increases in workload, especially in athletes with relatively low chronic training (think returning to play from injury or pre-season camps in collegiate sports). And really, that’s the crux of it all: avoid extremely large changes in training load because you will either overfatigue or underprepare your athlete and increase their risk of injury while decreasing their preparedness. And instead of just focusing on ACWR, we need to consider absolute and relative changes in workload in conjunction with measures of the athletes’ training tolerance (mood-state questionnaires, HRV, resting heart rate, jump testing, etc.). This holistic approach to athlete monitoring will provide us far more context and actionable data than getting caught up on a single metric (the good ole “forest for the trees” approach).</p>
+</div>
+<div id="calculating-acwr-in-r" class="section level2">
+<h2>Calculating ACWR in R</h2>
+<p>With the history out of the way, let’s get to the meat and potatoes of what I want to discuss: using R to calculate ACWR.</p>
+<p>If you aren’t familiar with R, you should be. R is a programming language that has been primarily used by statisticians to perform a wide variety of analytical techniques. The power of R comes from its high extensibility via packages–code libraries built to solve a variety of problems. Packages range from data manipulation packages (dplyr, data.table) to plotting (ggplot2, plotly) to dashboard creation (shiny, shinydashboard, flexdashboard) to…well, you get the idea. Basically, if you can dream up an idea, there’s probably an R package for it. And in the off chance it doesn’t exist in R but exists in Python (some of the high-level machine learning stuff), there’s even a package to call Python code in R! Really, R is a jack-of-all-trades, master-of-most language.</p>
+<p>This means problems that are extremely difficult to solve in Excel can often be conquered through loading a package and calling a single-line function in R. As an example, below is the array formula required to calculate a coupled chronic EWMA in Excel. You <em>might</em> need a magnifying glass.</p>
+<p><img src="Excel-array-formula.png" /></p>
+<p>See <a href="https://progressiveathleticperformance.com/free-downloads/" target="_blank">Adam Sullivan’s site</a> for the spreadsheet I pulled this formula from.</p>
+<p>Contrast that monster with what you would call in R:</p>
+<pre><code>library(TTR)
+EMA(training_load, n = 1, ratio = 2/(1+28))</code></pre>
+<p>What I did in the above code block is call the <code>TTR</code> package (a package built for financial analyses) and then call the exponential moving average function (EMA). <code>EMA</code> requires three pieces of information: the data we’re applying the function to, the size of the window to apply the decay ratio to, and the decay ratio. These correspond to column “E”, the formula in column “G”, and cell R9 in Adam’s spreadsheet I linked above.</p>
+<p>Granted, things get a bit more complicated when dealing with multiple athletes, but I think you’ll agree with me that the R code is still substantially easier to follow than the Excel formula. In this next example, I’m using the package <code>data.table</code> in addition to the <code>TTR</code> and <code>zoo</code> packages to calculate both a traditional ACWR (via simple moving averages) and an exponentially-weighted ACWR. Check back soon because I’ll have a video up that discusses the ins and outs of how to use <code>data.table</code>.</p>
+<div id="the-data" class="section level3">
+<h3>The Data</h3>
+<p>First, the <a href="tl-data.csv">data</a>:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">season</th>
+<th align="left">training.date</th>
+<th align="left">athlete</th>
+<th align="right">tl</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Fall 2017</td>
+<td align="left">2017-08-19</td>
+<td align="left">Rhiannon Garcia</td>
+<td align="right">632</td>
+</tr>
+<tr class="even">
+<td align="left">Fall 2017</td>
+<td align="left">2017-08-19</td>
+<td align="left">Shajee’a al-Amiri</td>
+<td align="right">1035</td>
+</tr>
+<tr class="odd">
+<td align="left">Fall 2017</td>
+<td align="left">2017-08-19</td>
+<td align="left">Brittany Valdez</td>
+<td align="right">948</td>
+</tr>
+<tr class="even">
+<td align="left">Fall 2017</td>
+<td align="left">2017-08-19</td>
+<td align="left">Urja Chaudhry</td>
+<td align="right">1264</td>
+</tr>
+<tr class="odd">
+<td align="left">Fall 2017</td>
+<td align="left">2017-08-19</td>
+<td align="left">Kayla Mix</td>
+<td align="right">1242</td>
+</tr>
+<tr class="even">
+<td align="left">Fall 2017</td>
+<td align="left">2017-08-19</td>
+<td align="left">Mariana Lewis</td>
+<td align="right">948</td>
+</tr>
+<tr class="odd">
+<td align="left">Fall 2017</td>
+<td align="left">2017-08-19</td>
+<td align="left">Nicole Tipton</td>
+<td align="right">948</td>
+</tr>
+<tr class="even">
+<td align="left">Fall 2017</td>
+<td align="left">2017-08-19</td>
+<td align="left">Marshelle Edwards</td>
+<td align="right">948</td>
+</tr>
+<tr class="odd">
+<td align="left">Fall 2017</td>
+<td align="left">2017-08-19</td>
+<td align="left">Cinoi Slovonsky</td>
+<td align="right">1095</td>
+</tr>
+<tr class="even">
+<td align="left">Fall 2017</td>
+<td align="left">2017-08-20</td>
+<td align="left">Mariana Lewis</td>
+<td align="right">1112</td>
+</tr>
+</tbody>
+</table>
+<p><img src="/post/2018-06-09-r-acwr-intro/index_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+</div>
+</div>
+<div id="more-than-one-way-to-skin-a-cat" class="section level2">
+<h2>More Than One Way to Skin a Cat</h2>
+<p>My data are stored in a data frame called tl.data. These are real values, but I’ve changed the names and dates to anonymize things. Anyway, the data frame has four columns: season, training.date, athlete, and tl. We aren’t concerned with the season column today, but will revisit it once we dive down the rabbit hole of subsetting data. For now, let’s start by calculating a 7:28 ACWR the “traditional” way–that is, coupled simple moving averages. Unfortunately, <code>TTR::SMA</code> doesn’t implement the “partial” argument, so we have to turn to <code>zoo::rollapplyr</code> instead. With <code>SMA</code>, you have to wait for both rolling windows to accumulate before an ACWR is calculated:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">season</th>
+<th align="left">training.date</th>
+<th align="left">athlete</th>
+<th align="right">tl</th>
+<th align="right">acute</th>
+<th align="right">chronic</th>
+<th align="right">SMA.ACWR</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Fall 2017</td>
+<td align="left">2017-08-19</td>
+<td align="left">Urja Chaudhry</td>
+<td align="right">1264</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">Fall 2017</td>
+<td align="left">2017-08-20</td>
+<td align="left">Urja Chaudhry</td>
+<td align="right">740</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">Fall 2017</td>
+<td align="left">2017-08-21</td>
+<td align="left">Urja Chaudhry</td>
+<td align="right">1002</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">Fall 2017</td>
+<td align="left">2017-08-22</td>
+<td align="left">Urja Chaudhry</td>
+<td align="right">528</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">Fall 2017</td>
+<td align="left">2017-08-23</td>
+<td align="left">Urja Chaudhry</td>
+<td align="right">720</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">Fall 2017</td>
+<td align="left">2017-08-24</td>
+<td align="left">Urja Chaudhry</td>
+<td align="right">0</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">Fall 2017</td>
+<td align="left">2017-08-25</td>
+<td align="left">Urja Chaudhry</td>
+<td align="right">696</td>
+<td align="right">707.1429</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">Fall 2017</td>
+<td align="left">2017-08-26</td>
+<td align="left">Urja Chaudhry</td>
+<td align="right">480</td>
+<td align="right">595.1429</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="odd">
+<td align="left">Fall 2017</td>
+<td align="left">2017-08-27</td>
+<td align="left">Urja Chaudhry</td>
+<td align="right">0</td>
+<td align="right">489.4286</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+<tr class="even">
+<td align="left">Fall 2017</td>
+<td align="left">2017-08-28</td>
+<td align="left">Urja Chaudhry</td>
+<td align="right">1330</td>
+<td align="right">536.2857</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+</tbody>
+</table>
+<p>With <code>rollapplyr</code>, on the other hand, the function will average the available data until it reaches the specified window size:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">season</th>
+<th align="left">training.date</th>
+<th align="left">athlete</th>
+<th align="right">tl</th>
+<th align="right">acute</th>
+<th align="right">chronic</th>
+<th align="right">SMA.ACWR</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Fall 2017</td>
+<td align="left">2017-08-19</td>
+<td align="left">Urja Chaudhry</td>
+<td align="right">1264</td>
+<td align="right">1264.0000</td>
+<td align="right">1264.0000</td>
+<td align="right">1.0000000</td>
+</tr>
+<tr class="even">
+<td align="left">Fall 2017</td>
+<td align="left">2017-08-20</td>
+<td align="left">Urja Chaudhry</td>
+<td align="right">740</td>
+<td align="right">1002.0000</td>
+<td align="right">1002.0000</td>
+<td align="right">1.0000000</td>
+</tr>
+<tr class="odd">
+<td align="left">Fall 2017</td>
+<td align="left">2017-08-21</td>
+<td align="left">Urja Chaudhry</td>
+<td align="right">1002</td>
+<td align="right">1002.0000</td>
+<td align="right">1002.0000</td>
+<td align="right">1.0000000</td>
+</tr>
+<tr class="even">
+<td align="left">Fall 2017</td>
+<td align="left">2017-08-22</td>
+<td align="left">Urja Chaudhry</td>
+<td align="right">528</td>
+<td align="right">883.5000</td>
+<td align="right">883.5000</td>
+<td align="right">1.0000000</td>
+</tr>
+<tr class="odd">
+<td align="left">Fall 2017</td>
+<td align="left">2017-08-23</td>
+<td align="left">Urja Chaudhry</td>
+<td align="right">720</td>
+<td align="right">850.8000</td>
+<td align="right">850.8000</td>
+<td align="right">1.0000000</td>
+</tr>
+<tr class="even">
+<td align="left">Fall 2017</td>
+<td align="left">2017-08-24</td>
+<td align="left">Urja Chaudhry</td>
+<td align="right">0</td>
+<td align="right">709.0000</td>
+<td align="right">709.0000</td>
+<td align="right">1.0000000</td>
+</tr>
+<tr class="odd">
+<td align="left">Fall 2017</td>
+<td align="left">2017-08-25</td>
+<td align="left">Urja Chaudhry</td>
+<td align="right">696</td>
+<td align="right">707.1429</td>
+<td align="right">707.1429</td>
+<td align="right">1.0000000</td>
+</tr>
+<tr class="even">
+<td align="left">Fall 2017</td>
+<td align="left">2017-08-26</td>
+<td align="left">Urja Chaudhry</td>
+<td align="right">480</td>
+<td align="right">595.1429</td>
+<td align="right">678.7500</td>
+<td align="right">0.8768219</td>
+</tr>
+<tr class="odd">
+<td align="left">Fall 2017</td>
+<td align="left">2017-08-27</td>
+<td align="left">Urja Chaudhry</td>
+<td align="right">0</td>
+<td align="right">489.4286</td>
+<td align="right">603.3333</td>
+<td align="right">0.8112076</td>
+</tr>
+<tr class="even">
+<td align="left">Fall 2017</td>
+<td align="left">2017-08-28</td>
+<td align="left">Urja Chaudhry</td>
+<td align="right">1330</td>
+<td align="right">536.2857</td>
+<td align="right">676.0000</td>
+<td align="right">0.7933221</td>
+</tr>
+</tbody>
+</table>
+<p>Now, if you want to wait for the windows to accumulate before returning an ACWR value, disregard what I just said about <code>rollapplyr</code> and use <code>SMA</code> instead. I’m honestly not sure what the “appropriate” method is in this case, but seeing as how <code>SMA</code> would spend ~ 1/3 of the season accumulating before returning an ACWR (college sports, man), I prefer <code>rollapplyr</code> in this case. This does leave us with the question of how to account for the athletes’ training states coming into the season, but I’ll leave that for another post.</p>
+<p>Anyway, here’s how I calculated the ACWR values above with <code>rollapplyr</code>. You’ll notice I’m able to apply these functions to each individual athlete thanks to the <code>data.table</code> package. I’ll have a video on how that works soon.</p>
+<p><strong>2018-06-12 edit:</strong> I realized I left out a very important piece of information! If you’re looking to copy these functions in the provided dataset or your own data, you’ll need to enable data.table’s functionality on the data prior to using the functions below. That’s accomplished by calling:</p>
+<pre class="r"><code>tl.data &lt;- data.table(tl.data)</code></pre>
+<p>Sorry for any confusion!</p>
+<pre class="r"><code>#Packages needed
+library(data.table)
+library(ggplot2)
+library(zoo)
+
+#Calculate each variable
+tl.data[, sma.acute := rollapplyr(tl, 7, mean, partial = TRUE), by = .(athlete)]
+tl.data[, sma.chronic := rollapplyr(tl, 28, mean, partial = TRUE), by = .(athlete)]
+tl.data[, sma.ACWR := sma.acute/sma.chronic]
+
+#Plot the data
+ggplot(tl.data, aes(x = training.date)) + geom_col(aes(y = tl)) + 
+  geom_line(aes(y = sma.ACWR * 1000)) + 
+  scale_y_continuous(sec.axis = sec_axis(~./1000, name = &#39;SMA ACWR&#39;)) + 
+  theme_bw() + facet_wrap(~athlete) + 
+  labs(title = &#39;TL with SMA ACWR&#39;, x = &#39;Training Date&#39;, y = &#39;TL&#39;)</code></pre>
+<p><img src="/post/2018-06-09-r-acwr-intro/index_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>Unfortunately, calling <code>rollapplyr</code> is a bit of a handful compared to <code>SMA</code>, but whatever. As you can see, we now have individual ACWRs using the “traditional” calculation method. How about using exponentially-weighted moving averages? Thankfully, this is a lot easier since we can use <code>EMA</code>:</p>
+<pre class="r"><code>#Packages needed
+library(data.table)
+library(ggplot2)
+library(TTR)
+
+#Calculate each variable
+tl.data[, ema.acute := EMA(tl, n = 1, ratio = 2/(1+7)), by = .(athlete)]
+tl.data[, ema.chronic := EMA(tl, n = 1, ratio = 2/(1+28)), by = .(athlete)]
+tl.data[, ema.ACWR := ema.acute/ema.chronic]
+
+#Plot the data
+ggplot(tl.data, aes(x = training.date)) + geom_col(aes(y = tl)) + 
+  geom_line(aes(y = ema.ACWR * 1000)) + 
+  scale_y_continuous(sec.axis = sec_axis(~./1000, name = &#39;EMA ACWR&#39;)) + 
+  theme_bw() + facet_wrap(~athlete) + 
+  labs(title = &#39;TL with EMA ACWR&#39;, x = &#39;Training Date&#39;, y = &#39;TL&#39;)</code></pre>
+<p><img src="/post/2018-06-09-r-acwr-intro/index_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>Alternatively, if you want the EMA to accumulate before returning values, you would call:</p>
+<pre><code>tl.data[, ema.acute := EMA(tl, n = 7, ratio = 2/(1+7)), by = .(athlete)]
+tl.data[, ema.chronic := EMA(tl, n = 28, ratio = 2/(1+28)), by = .(athlete)]
+tl.data[, ema.ACWR := ema.acute/ema.chronic]</code></pre>
+<p>I should point out these two methods <strong><em>return different values</em></strong>, unlike <code>SMA</code> and <code>rollapplyr</code>. This is because of the decay ratio in <code>EMA</code>. So don’t use different window sizes (n = 1 vs. n = 7 or n = 28) interchangably. And be sure to report how you’re calculating your windows!</p>
+<p>Let’s compare our ACWR values for a single athlete. I’ve included ACWRs for the traditional method and both methods of EMA discussed above:</p>
+<pre class="r"><code>#Alternate EMA calculation
+tl.data[, ema.acute.alt := EMA(tl, n = 7, ratio = 2/(1+7)), by = .(athlete)]
+tl.data[, ema.chronic.alt := EMA(tl, n = 28, ratio = 2/(1+28)), by = .(athlete)]
+tl.data[, ema.ACWR.alt := ema.acute.alt/ema.chronic.alt]
+
+#Shift the ACWR values down one day to accurately reflect the effect of the previous day&#39;s training
+tl.data[, c(&#39;sma.lagged&#39;,&#39;ema.lagged&#39;, &#39;ema.alt.lagged&#39;) := 
+          shift(.SD, n = 1, type = &#39;lag&#39;, fill = NA), 
+        .SDcols = c(&#39;sma.ACWR&#39;,&#39;ema.ACWR&#39;, &#39;ema.ACWR.alt&#39;), by = .(athlete)]
+
+#Plot the results
+ggplot(tl.data[athlete == &#39;Urja Chaudhry&#39;], aes(x = as.Date(training.date), group = 1)) + 
+  geom_col(aes(y = tl)) + geom_line(aes(y = sma.lagged * 1000, colour = &#39;SMA&#39;)) + 
+  geom_line(aes(y = ema.lagged * 1000, colour = &#39;EMA&#39;)) + 
+  geom_line(aes(y = ema.alt.lagged * 1000, colour = &#39;EMA alt&#39;)) +
+  scale_y_continuous(sec.axis = sec_axis(~./1000, name = &#39;ACWR&#39;)) + 
+  labs(title = &#39;ACWR Comparison&#39;, x = &#39;Training Date&#39;, y = &#39;TL&#39;, colour = &#39;Method&#39;) + 
+  theme_bw() + theme(legend.position = &#39;bottom&#39;)</code></pre>
+<p><img src="/post/2018-06-09-r-acwr-intro/index_files/figure-html/unnamed-chunk-7-1.png" width="2100" /></p>
+<p>Hopefully you notice there are some pretty stark diffferences between the SMA and EMA methods, with the differences in the two EMA approaches mostly disappearing by day 45. This echoes what Windt and Gabbett <span class="citation">[<a href="#ref-Windt_2018">9</a>]</span> say at the end of their editorial: explicity detail how you’re calculating your ACWRs!</p>
+</div>
+<div id="coupled-vs.-uncoupled" class="section level2">
+<h2>Coupled vs. Uncoupled</h2>
+<p>If you’ve read Windt and Gabbett’s editorial <span class="citation">[<a href="#ref-Windt_2018">9</a>]</span>, they provide an equation to convert coupled ACWRs to uncoupled ACWRs:</p>
+<p><span class="math inline">\(Uncoupled ACWR = \frac{3 * Coupled ACWR}{4 - Coupled ACWR}\)</span></p>
+<p>This post is pretty long in the tooth at this point, so I’m only going to apply this function to my original EMA calculation (n = 1). The same functions will apply for the other ACWR methods.</p>
+<pre class="r"><code>#Uncoupled EMA ACWR calculation
+tl.data[, uncoupled.ema := (3 * ema.lagged)/(4 - ema.lagged)]
+
+#Plot the results
+ggplot(tl.data[athlete == &#39;Urja Chaudhry&#39;], aes(x = as.Date(training.date), group = 1)) +
+  geom_col(aes(y = tl)) + geom_line(aes(y = ema.lagged * 1000, colour = &#39;Coupled&#39;)) +
+  geom_line(aes(y = uncoupled.ema * 1000, colour = &#39;Uncoupled&#39;)) +
+  scale_y_continuous(sec.axis = sec_axis(~./1000, name = &#39;ACWR&#39;)) +
+  labs(title = &#39;Coupled vs. Uncoupled&#39;, x = &#39;Training Date&#39;, y = &#39;TL&#39;, colour = &#39;Method&#39;) +
+  theme_bw() + theme(legend.position = &#39;bottom&#39;)</code></pre>
+<p><img src="/post/2018-06-09-r-acwr-intro/index_files/figure-html/unnamed-chunk-8-1.png" width="2100" /></p>
+<p>And that’s it. There are some definite differences in the two methods, so again, be consistent in how you choose to perform your analysis.</p>
+</div>
+<div id="wrapping-up" class="section level2">
+<h2>Wrapping Up</h2>
+<p>ggplot code notwithstanding (that stuff gets to be a mess after a while), hopefully this post highlighted the fact that a few lines of R code can accomplish the same thing as lines and lines of Excel array formulas. The syntax might look a little scary at first, but once you get the hang of it, you can pound out extremely complex analysis code in a few minutes. From there, you can create a report or a dashboard that will allow you to drill down into your data.</p>
+<p>Something also worth mentioning is the time required to update an Excel spreadsheet vs. using a script in R. Excel does not play nice with large data sets that contain multiple sets of array formulas. As you add more data and the files get larger, they take longer to open, adding new training data causes the workbook to hang, and you’re <em>never quite sure</em> if saving the workbook is going to save your additions or cause Excel to crash. Contrast that with R: I have eight years of men’s soccer RPE data. There are ~ 35,000 records, 89 athletes, and 16 seasons (fall/spring). Running the above EMA calculations (with n = 1) on the data took ~ 0.2 seconds. I’m pretty sure Excel would literally cause my computer to catch on fire if I tried that in a workbook. So while there’s some learning required on the front end, the benefits far outweigh the costs.</p>
+<p>If you do want to stay in the Microsoft ecosystem, though, you can have your cake and eat it too if you use Power BI, Microsoft’s business insights software. Think of it as a suped up version of Excel that can actually handle large amounts of data without exploding. Better yet, it has R code support, so you can actually import your data through Power BI and execute code that returns your data with all the necessary calculations. I’ve successfully used that approach to create dashboards for a few coaches over the last few years. I’ll (eventually) have a video up walking you through that process.</p>
+<p><img src="bi-example.png" /></p>
+<p>As for which ACWR method is “correct,” ¯\_(ツ)_/¯. I tend to agree with Windt and Gabbett <span class="citation">[<a href="#ref-Windt_2018">9</a>]</span> that we shouldn’t get lost in the minutiae of simple vs. exponential vs. coupled vs. uncoupled vs. whatever else this field comes up with. At the end of the day, we need to prescribe training loads in a logical fashion so we don’t completely break our athletes: High chronic workloads need to be built slowly over time to prepare our athletes for the worst-case scenario (for us a few years ago, that was three double overtime games in 12 days against teams who all finished in the top 15), and we need to monitor how our athletes are tolerating training through a combination of physical and psychological assessments. Let’s worry about the small problems once we get the basics down, yeah?</p>
+</div>
+<div id="code-recap" class="section level2">
+<h2>Code Recap</h2>
+<p>To recap the code I used in this post:</p>
+<pre class="r"><code># Required packages
+library(data.table)
+library(ggplot2)
+library(TTR)
+library(zoo)
+
+# Enabling data.table functionality
+tl.data &lt;- data.table(tl.data)
+
+# Coupled ACWR via simple moving averages
+tl.data[, sma.acute := rollapplyr(tl, 7, mean, partial = TRUE), by = .(athlete)]
+tl.data[, sma.chronic := rollapplyr(tl, 28, mean, partial = TRUE), by = .(athlete)]
+tl.data[, sma.ACWR := sma.acute/sma.chronic]
+
+# Alternatively
+tl.data[, sma.acute := SMA(tl, 7), by = .(athlete)]
+tl.data[, sma.chronic := SMA(tl, 28), by = .(athlete)]
+tl.data[, sma.ACWR := sma.acute/sma.chronic]
+
+# Coupled ACWR via exponentially-weighted moving averages
+tl.data[, ema.acute := EMA(tl, n = 1, ratio = 2/(1+7)), by = .(athlete)]
+tl.data[, ema.chronic := EMA(tl, n = 1, ratio = 2/(1+28)), by = .(athlete)]
+tl.data[, ema.ACWR := ema.acute/ema.chronic]
+
+# Alternatively,
+tl.data[, ema.acute := EMA(tl, n = 7, ratio = 2/(1+7)), by = .(athlete)]
+tl.data[, ema.chronic := EMA(tl, n = 28, ratio = 2/(1+28)), by = .(athlete)]
+tl.data[, ema.ACWR := ema.acute/ema.chronic]
+
+# Uncoupling the ACWR
+tl.data[, uncoupled.ema := (3 * ema.lagged)/(4 - ema.lagged)]</code></pre>
+<p>Let me know if you have any questions! Shoot me an email: <a href="mailto:samsperformancetraining@gmail.com">samsperformancetraining@gmail.com</a></p>
+</div>
+<div id="references" class="section level2 unnumbered">
+<h2>References</h2>
+<div id="refs" class="references">
+<div id="ref-DeWeese_2015">
+<p><sup>1</sup> <em>DeWeese BH, Hornsby G, Stone M, Stone MH. </em>The training process: Planning for strengthpower training in track and field. Part 1: Theoretical aspects. Journal of Sport and Health Science 2015; 4: 308–317 Available from: <a href="https://doi.org/10.1016/j.jshs.2015.07.003">https://doi.org/10.1016/j.jshs.2015.07.003</a></p>
+</div>
+<div id="ref-Ehrmann_2016">
+<p><sup>2</sup> <em>Ehrmann FE, Duncan CS, Sindhusake D, Franzsen WN, Greene DA. </em>GPS and injury prevention in professional soccer. Journal of Strength and Conditioning Research 2016; 30: 360–367 Available from: <a href="https://doi.org/10.1519/jsc.0000000000001093">https://doi.org/10.1519/jsc.0000000000001093</a></p>
+</div>
+<div id="ref-Gabbett_2016">
+<p><sup>3</sup> <em>Gabbett TJ. </em>The traininginjury prevention paradox: Should athletes be training smarterandharder? British Journal of Sports Medicine 2016; 50: 273–280 Available from: <a href="https://doi.org/10.1136/bjsports-2015-095788">https://doi.org/10.1136/bjsports-2015-095788</a></p>
+</div>
+<div id="ref-Hulin_2013">
+<p><sup>4</sup> <em>Hulin BT, Gabbett TJ, Blanch P, Chapman P, Bailey D, Orchard JW. </em>Spikes in acute workload are associated with increased injury risk in elite cricket fast bowlers. British Journal of Sports Medicine 2013; 48: 708–712 Available from: <a href="https://doi.org/10.1136/bjsports-2013-092524">https://doi.org/10.1136/bjsports-2013-092524</a></p>
+</div>
+<div id="ref-Hulin_2015">
+<p><sup>5</sup> <em>Hulin BT, Gabbett TJ, Lawson DW, Caputi P, Sampson JA. </em>The acute:Chronic workload ratio predicts injury: High chronic workload may decrease injury risk in elite rugby league players. British Journal of Sports Medicine 2015; 50: 231–236 Available from: <a href="https://doi.org/10.1136/bjsports-2015-094817">https://doi.org/10.1136/bjsports-2015-094817</a></p>
+</div>
+<div id="ref-Lolli_2017">
+<p><sup>6</sup> <em>Lolli L, Batterham AM, Hawkins R, Kelly DM, Strudwick AJ, Thorpe R, Gregson W, Atkinson G. </em>Mathematical coupling causes spurious correlation within the conventional acute-to-chronic workload ratio calculations. British Journal of Sports Medicine 2017; bjsports–2017–098110 Available from: <a href="https://doi.org/10.1136/bjsports-2017-098110">https://doi.org/10.1136/bjsports-2017-098110</a></p>
+</div>
+<div id="ref-Malone_2018">
+<p><sup>7</sup> <em>Malone S, Hughes B, Doran DA, Collins K, Gabbett TJ. </em>Can the workloadinjury relationship be moderated by improved strength, speed and repeated-sprint qualities? Journal of Science and Medicine in Sport 2018; Available from: <a href="https://doi.org/10.1016/j.jsams.2018.01.010">https://doi.org/10.1016/j.jsams.2018.01.010</a></p>
+</div>
+<div id="ref-Murray_2016">
+<p><sup>8</sup> <em>Murray NB, Gabbett TJ, Townshend AD, Blanch P. </em>Calculating acute:Chronic workload ratios using exponentially weighted moving averages provides a more sensitive indicator of injury likelihood than rolling averages. British Journal of Sports Medicine 2016; 51: 749–754 Available from: <a href="https://doi.org/10.1136/bjsports-2016-097152">https://doi.org/10.1136/bjsports-2016-097152</a></p>
+</div>
+<div id="ref-Windt_2018">
+<p><sup>9</sup> <em>Windt J, Gabbett TJ. </em>Is it all for naught? What does mathematical coupling mean for acute:Chronic workload ratios? British Journal of Sports Medicine 2018; bjsports–2017–098925 Available from: <a href="https://doi.org/10.1136/bjsports-2017-098925">https://doi.org/10.1136/bjsports-2017-098925</a></p>
+</div>
+</div>
+</div>
+
+    </div>
+
+    
+
+<div class="article-tags">
+  
+  <a class="badge badge-light" href="/tags/acwr/">ACWR</a>
+  
+  <a class="badge badge-light" href="/tags/athlete-monitoring/">athlete monitoring</a>
+  
+</div>
+
+
+
+    
+      
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+  
+  
+    
+  
+  
+  <div class="media author-card" itemscope itemtype="http://schema.org/Person">
+    
+      
+      <img class="portrait mr-3" src="/authors/admin/avatar_hufb07346105f0dfc5dadc132393506455_2377246_250x250_fill_q90_lanczos_center.jpg" itemprop="image" alt="Avatar">
+    
+
+    <div class="media-body">
+      <h5 class="card-title" itemprop="name"><a href="/">Matt Sams</a></h5>
+      <h6 class="card-subtitle">Performance Analyst</h6>
+      <p class="card-text" itemprop="description">My interests focus on maximizing athletes&rsquo; performance while managing their fatigue and injury risk.</p>
+      <ul class="network-icon" aria-hidden="true">
+        
+          
+          
+          
+            
+          
+          
+          
+          
+          
+            
+          
+          <li>
+            <a itemprop="sameAs" href="/#contact" >
+              <i class="fas fa-envelope"></i>
+            </a>
+          </li>
+        
+          
+          
+          
+            
+          
+          
+          
+          
+          
+            
+          
+          <li>
+            <a itemprop="sameAs" href="https://twitter.com/DrMattSams" target="_blank" rel="noopener">
+              <i class="fab fa-twitter"></i>
+            </a>
+          </li>
+        
+          
+          
+          
+          
+          
+          
+          
+            
+          
+          <li>
+            <a itemprop="sameAs" href="https://scholar.google.com/citations?user=SGgfLSYAAAAJ&amp;hl" target="_blank" rel="noopener">
+              <i class="ai ai-google-scholar"></i>
+            </a>
+          </li>
+        
+          
+          
+          
+            
+          
+          
+          
+          
+          
+            
+          
+          <li>
+            <a itemprop="sameAs" href="https://github.com/mattsams89" target="_blank" rel="noopener">
+              <i class="fab fa-github"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+
+
+
+      
+      
+    
+
+    
+    <div class="article-widget">
+      
+<div class="post-nav">
+  
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/post/2018-06-24-s3-2018-recap/s3-2018-recap/" rel="next">S3 2018 Recap</a>
+  </div>
+  
+  
+</div>
+
+    </div>
+    
+
+    
+
+
+  </div>
+</article>
+
+      
+
+    
+    
+    
+    <script src="/js/mathjax-config.js"></script>
+    
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.4/imagesloaded.pkgd.min.js" integrity="sha256-lqvxZrPLtfffUl2G/e7szqSvPBILGbwmsGE1MKlOi0Q=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.6/isotope.pkgd.min.js" integrity="sha256-CBrpuqrMhXwcLLUd5tvQ4euBHCdh7wGlDfNz8vbu/iI=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+
+      
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/highlight.min.js" integrity="sha256-aYTdUrn6Ow1DDgh5JTc3aDGnnju48y/1c8s1dgkYPQ8=" crossorigin="anonymous"></script>
+        
+        <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/languages/r.min.js"></script>
+        
+      
+
+      
+      
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.4/MathJax.js?config=TeX-AMS_CHTML-full" integrity="sha256-GhM+5JHb6QUzOQPXSJLEWP7R73CbkisjzK5Eyij4U9w=" crossorigin="anonymous" async></script>
+      
+    
+
+    
+    
+
+    
+    
+    
+
+    
+    
+    <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script>
+      const search_index_filename = "/index.json";
+      const i18n = {
+        'placeholder': "Search...",
+        'results': "results found",
+        'no_results': "No results found"
+      };
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+
+    
+    
+    <script id="search-hit-fuse-template" type="text/x-template">
+      <div class="search-hit" id="summary-{{key}}">
+      <div class="search-hit-content">
+        <div class="search-hit-name">
+          <a href="{{relpermalink}}">{{title}}</a>
+          <div class="article-metadata search-hit-type">{{type}}</div>
+          <p class="search-hit-description">{{snippet}}</p>
+        </div>
+      </div>
+      </div>
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    
+    
+    
+    <script src="/js/academic.min.9ef1b53ee2bde6c7f33b150c6ba4d452.js"></script>
+
+    
+
+
+
+
+
+
+  
+  <div class="container">
+    <footer class="site-footer">
+  
+  <p class="powered-by">
+    <a href="/privacy/">Privacy Policy</a>
+  </p>
+  
+
+  <p class="powered-by">
+    &copy; Matt Sams 2019 &middot; 
+
+    Powered by the
+    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+    
+    <span class="float-right" aria-hidden="true">
+      <a href="#" id="back_to_top">
+        <span class="button_icon">
+          <i class="fas fa-chevron-up fa-2x"></i>
+        </span>
+      </a>
+    </span>
+    
+  </p>
+</footer>
+
+  </div>
+  
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

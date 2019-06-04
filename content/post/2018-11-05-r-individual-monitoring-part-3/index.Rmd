@@ -1,0 +1,228 @@
+---
+title: Individualized Athlete Monitoring in R, Part 3 (Interpreting the Predictive Model)
+author: Matt
+date: '2018-11-05'
+weight: 10
+slug: r-individual-monitoring-part-2
+categories:
+  - R
+tags:
+  - athlete monitoring
+  - workload management
+  - predictive modeling
+subtitle: ''
+summary: 'Modeling and anomaly detection in R'
+authors: []
+lastmod: '2019-06-04T11:33:38-07:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: yes
+bibliography: 3-refs.bib
+csl: ijsm.csl
+link-citations: yes
+output:
+  blogdown::html_page:
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+library(data.table)
+library(ggplot2)
+library(knitr)
+library(kableExtra)
+library(dplyr)
+library(corrplot)
+library(lme4)
+library(lubridate)
+library(gridExtra)
+library(caret)
+library(sjstats)
+
+rpe.data <- read.csv('prediction-data.csv')
+
+rpe.data <- data.table(rpe.data)
+
+rpe.data$date <- as.Date(rpe.data$date, format = '%m/%d/%Y')
+
+rpe.data[, c("field.minutes", "odometer", "work.rate", "plyr.ld", "hi.run", "duration") :=
+           lapply(.SD, as.numeric), .SDcols = field.minutes:duration]
+
+rpe.data$plyr.ld <- NULL
+
+rpe.scaled <- rpe.data
+
+rpe.scaled[, c("field.minutes", "odometer", "work.rate", "hi.run", "duration") := 
+             lapply(.SD, function(x) as.vector(scale(x))), 
+           .SDcols = field.minutes:duration, by = season]
+
+rpe.scaled[, log.rpetl := log(rpetl)]
+
+scaled.model.6 <- lmer(rpetl ~ (1|season/athlete) + odometer + work.rate + hi.run + 
+                         field.minutes + duration + season + phase, 
+                       data = rpe.scaled, REML = FALSE)
+
+final.model <- update(scaled.model.6, log.rpetl ~.)
+```
+
+## Hitting the Ground Running
+
+This post assumes you've already read [part 1](/post/2018-08-15-r-individual-monitoring/r-individual-monitoring-part-1/){target="_blank"} and [part 2](/post/2018-11-05-individual-monitoring-part-2/r-individual-monitoring-part-2/){target="_blank"} for "Individual Athlete Monitoring in R." If you haven't I'd suggest you go back to part 2 for some context for this post. Otherwise, you're going to be pretty lost. Let's go.
+
+### It's Predicting Time
+
+Last time, we built a linear mixed model with the `lme4` package called `final model`. This model used two categorical fixed effects (season, phase within season) along with five grand mean centered numeric fixed effects (total distance, work rate, hi-speed running distance, time spent in drills, and total practice duration) to predict log transformed rpetl values. We further included athletes nested within season as random intercept effects in the model to reflect that we're analyzing repeated-measures data where the magnitudes of the relationships between variables may differ between athletes and between seasons. I know that's a bit of a mouthful, so seriously, go back and look at [part 2](/post/2018-11-05-individual-monitoring-part-2/r-individual-monitoring-part-2/){target="_blank"} if you're not sure what I'm talking about. The model output is below.
+
+```{r, echo=FALSE}
+summary(final.model)
+```
+
+Under normal circumstances, you would probably be comparing several methods to model the relationship between external load metrics and rpetl. In that case, you would go through a cross-validation process similar to [@Carey_2016], where you split your data into training and test sets to determine which method is most effective in predicting previously-unseen data. We'll leave that for some other time, though. For now, let's attempt to tackle a real-life problem: using our model, can we identify anomalous rpetl values? I'm going to split the data so that we're attempting to predict rpetl values for the final three weeks of the 2017 season. I'll also re-create the model based on this trimmed dataset.
+
+```{r}
+# Create a training set
+training.data <- rpe.scaled[date < "2017-10-16"]
+
+prediction.data <- rpe.scaled[date >= "2017-10-16"]
+
+# New model based on training.data
+final.model <- lmer(log.rpetl ~ (1|season/athlete) + odometer + work.rate + hi.run + 
+                         field.minutes + duration + season + phase, 
+                       data = training.data, REML = FALSE)
+```
+
+It's important to note the scaled predictors in `training.data` aren't *quite* correct because the original scaling process included the data from `prediction.data`. In the real world, your training data will lag behind the data you want to predict by a few days or a few weeks. The amount of lag is up to you as I haven't found any satisfying answers in reading about predictive modeling. You could easily set up a script that would update your training dataset every few days to keep your model up-to-date. You could, however, base `prediction.data`'s scaled coefficients on the entire dataset to ensure the scaled values accurately reflect the data. Anyway, let's start by using our model to predict rpetl values for `training.data`. Remember, we log transformed rpetl last time, so we'll need to back-transform the predictions via `exp()`.
+
+```{r}
+# Predict log-transformed rpetl values from our final model
+training.data$log.prediction <- predict(final.model, training.data)
+
+# Back-transform the predictions to raw rpetl values
+training.data[, prediction := exp(log.prediction)]
+
+knitr::kable(training.data[1:10, c("athlete", "date", "rpetl", "prediction")]) %>%
+  kable_styling(c("responsive","condensed"))
+```
+
+Notice the predictions aren't spot-on. We can quantify our model's prediction error at both the group level and individual level. Model error is typically reported as mean absolute error (MAE) or root mean square error (RMSE). [@Ward_2018] recommend using a combination of the between-subject and within-subject RMSE (a.k.a. root mean square deviation) to set limits and confidence intervals for truly anomalous prediction errors. A drawback to RMSE is that it penalizes outliers more heavily compared to MAE. Since we're interested in identifying outliers in this case, we might examine the MAE instead. But in the words of the Old El Paso commercial, "Por que no los dos?" We can examine both approaches pretty easily with the `caret` package.
+
+```{r}
+# Group RMSE
+training.data[, .(group.RMSE = RMSE(prediction, rpetl))]
+
+# Individual RMSE
+training.data[, .(individual.RMSE = RMSE(prediction, rpetl)), by = athlete]
+
+# Group MAE
+training.data[, .(group.MAE = MAE(prediction, rpetl))]
+
+# Individual MAE
+training.data[, .(individual.MAE = MAE(prediction, rpetl)), by = athlete]
+```
+
+It's pretty interesting to examine the spread of the prediction errors among athletes. I would wager we could improve the model's predictive accuracy by accounting for pre-training wellness, previous match outcome, injury status, MD minus, and other contextual factors, but I think a RMSE of ~ 72 units (range 33 - 118) and MAE of 51 units (range 25 - 81) will be acceptable for today's example. Further, an approach similar to [@Vandewiele_2017], where anomalous points produced by sickness and injury are retroactively removed, might be another way to improve the model's predictive ability. Unfortunately, we didn't collect contextual data like that, so we're stuck with what we have.
+
+## Identifying Anomalies
+
+First, let's add our between- and within-subject RMSE and MAE to `prediction.data`.
+
+```{r}
+# Group RMSE
+group.RMSE <- training.data[, RMSE(prediction, rpetl)]
+
+# Individual RMSE
+individual.RMSE <- training.data[, .(individual.RMSE = RMSE(prediction, rpetl)), 
+                             by = athlete]
+
+# Group MAE
+group.MAE <- training.data[, MAE(prediction, rpetl)]
+
+# Individual MAE
+individual.MAE <- training.data[, .(individual.MAE = MAE(prediction, rpetl)), 
+                                by = athlete]
+
+# Add model predictions to prediction.data
+prediction.data$log.prediction <- predict(final.model, prediction.data)
+
+prediction.data[, prediction := exp(log.prediction)]
+
+# Add group MAE and RMSE to prediction.data
+prediction.data[, ":=" (prediction.error = rpetl - prediction, 
+                        group.RMSE = group.RMSE,
+                        group.MAE = group.MAE)]
+
+# Add individual RMSE and MAE via merge()
+prediction.data <- merge(prediction.data, individual.RMSE, sort = FALSE)
+
+prediction.data <- merge(prediction.data, individual.MAE, sort = FALSE)
+```
+
+Once we've added the RMSE and MAE to `prediction.data`, we can visualize them.
+
+```{r}
+# RMSE plot
+ggplot(prediction.data, aes(x = date, y = prediction.error)) +
+  geom_pointrange(aes(ymin = prediction.error - individual.RMSE,
+                      ymax = prediction.error + individual.RMSE)) +
+  geom_ribbon(aes(ymin = -group.RMSE,
+                  ymax = group.RMSE), alpha = 0.2) +
+  theme_bw() + facet_wrap(~athlete, scales = "free_y") +
+  labs(title = "Predictions vs. Actual (RMSE)",
+       x = "Date",
+       y = "Actual - Predicted RPETL (AU)") +
+  geom_hline(aes(yintercept = 0), linetype = "dotdash")
+
+# MAE plot
+ggplot(prediction.data, aes(x = date, y = prediction.error)) +
+  geom_pointrange(aes(ymin = prediction.error - individual.MAE,
+                      ymax = prediction.error + individual.MAE)) +
+  geom_ribbon(aes(ymin = -group.MAE,
+                  ymax = group.MAE), alpha = 0.2) +
+  theme_bw() + facet_wrap(~athlete, scales = "free_y") +
+  labs(title = "Predictions vs. Actual (MAE)",
+       x = "Date",
+       y = "Actual - Predicted RPETL (AU)") +
+  geom_hline(aes(yintercept = 0), linetype = "dotdash")
+```
+
+It's pretty difficult to make out what's happening at the group level, so let's zoom in on a single athlete (Samuel Llanas Brito).
+
+```{r, echo=FALSE}
+
+# RMSE plot
+ggplot(prediction.data[athlete == "Samuel Llanas Brito"], 
+       aes(x = date, y = prediction.error)) +
+  geom_pointrange(aes(ymin = prediction.error - individual.RMSE,
+                      ymax = prediction.error + individual.RMSE)) +
+  geom_ribbon(aes(ymin = -group.RMSE,
+                  ymax = group.RMSE), alpha = 0.2) +
+  theme_bw() +
+  labs(title = "Predictions vs. Actual (RMSE)",
+       x = "Date",
+       y = "Actual - Predicted RPETL (AU)") +
+  geom_hline(aes(yintercept = 0), linetype = "dotdash")
+
+# MAE plot
+ggplot(prediction.data[athlete == "Samuel Llanas Brito"], 
+       aes(x = date, y = prediction.error)) +
+  geom_pointrange(aes(ymin = prediction.error - individual.MAE,
+                      ymax = prediction.error + individual.MAE)) +
+  geom_ribbon(aes(ymin = -group.MAE,
+                  ymax = group.MAE), alpha = 0.2) +
+  theme_bw() +
+  labs(title = "Predictions vs. Actual (MAE)",
+       x = "Date",
+       y = "Actual - Predicted RPETL (AU)") +
+  geom_hline(aes(yintercept = 0), linetype = "dotdash")
+```
+
+For Samuel, both the RMSE and MAE methods are in relative agreement with two sessions drastically above predicted, three sessions just above the error limits, and one session well below what was predicted. Having access to the original data, I can tell you the first anomalous point comes from the athlete's first practice back from a contact injury sustained 9 days before. It's safe to assume that contributed to the anomalous score. Similarly, the second point came after his first match involvement following his injury. We can assume some lingering match fatigue may have contributed, which is also likely reflected in his above-prediction scores on Oct. 31st and Nov. 2nd. For him, an altered training setup (bike/pool fitness, play as a neutral, etc.) with more gradual RTP may have been preferrable to immediate full involvement. Of course, it's easy to say that now, but examining this data retroactively can also help us understand how we can improve our RTP process in the future.
+
+As for the extreme over-prediction on November 3rd, that was an intrasquad during a bye week. Having been with the team through a number of these over the years, late-season intrasquads tended to be more laid back and ended with a low-stakes round of penalty kicks where the athletes inentionally attempted to distract the athlete taking the PK. The relaxed atmosphere and extended low-intensity (and sometimes silly) round of PKs probably contributed to the lower-than-predicted rpetl values. And if you look back at the other athletes' data, you'll notice a similar trend for most of the team. Again, situations like this are where adding additional complexity to the model (percent of practice time spent in drills, maybe? Feel free to experiment.) may improve its predictive power. 
+
+## Wrapping Up
+
+![](enough.jpg)
+
+I think this is a good place to stop. Hopefully parts 2 and 3 have given you a decent introduction to using mixed model predictions as part of your athlete monitoring. This post wasn't comprehensive, by any means, and probably left out some parts of the process. So if you're still a little unsure of where to go from here, feel free to hit me up on Twitter or via email and I'll get back to you ASAP. Also, I know I didn't address using the fixed effects' coefficients for athletes with limited data; if you would like to see my thoughts on how to implement that, let me know and I'll add an addendum to this post. Finally, feel free to share your own ideas on how to improve the predictive accuracy of the model. I always love hearing others' ideas!

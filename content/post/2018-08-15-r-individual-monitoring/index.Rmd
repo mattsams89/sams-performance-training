@@ -1,0 +1,314 @@
+---
+title: Individualized Athlete Monitoring in R, Part 1
+author: Matt
+date: '2018-08-15'
+slug: r-individual-monitoring-part-1
+categories:
+  - R
+tags:
+  - athlete monitoring
+  - workload management
+subtitle: ''
+summary: 'An introduction to individualized athlete monitoring in R'
+authors: []
+lastmod: '2019-06-04T01:36:13-07:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: yes
+bibliography: 3-refs.bib
+csl: ijsm.csl
+link-citations: yes
+output:
+  blogdown::html_page:
+    toc: yes
+---
+
+```{r setup, include=FALSE}
+library(data.table)
+library(ggplot2)
+library(knitr)
+library(TTR)
+library(dplyr)
+```
+
+## Getting Back into the Swing of Things
+
+![](bender.jpg)
+
+Well, it's been a hot minute since my last post (whoops!). I've been busy with bobsledders and job hunting this summer, but I've finally found a bit of time to get back to the ole blog now that bobsled's summer training is winding down and I'm preparing for an intercontinental move (keep an eye on Twitter for related news). 
+
+A ton of great papers have come out this summer focused on various aspects of athlete monitoring. One that I particularly enjoyed was "Putting the 'I' Back in Team" by Patrick Ward, Aaron Coutts, Ricard Pruna, and Alan McCall [-@Ward_2018]. They didn't discuss anything groundbreaking, but it was nice to see statistical process control get a bit more love (for additional commentary on SPC, see Sands et al. [-@Sands_2017]) while dancing around the idea of anomaly detection via modeling. The latter has been particularly interesting to me for the last year or so, but I haven't gotten past the "fiddling stage" in R until the last month. We'll get deeper into SPC today and will touch on anomaly detection in Part 2.
+
+## Statistical Process Control (SPC)
+
+![](quality-control.jpg)
+
+Like many of the other statistical techniques used in sports science, SPC has been borrowed from the business analytics world, specifically manufacturing quality control. The underlying theory of SPC is pretty straightforward--all "processes" possess a certain amount of variation or noise. Some of this variation is idiosyncratic (inherent to the individual process being studied), whereas additional unexplained variation may be introduced through alterations in the process. Processes experiencing normal variation are said to be "in control" or "stable" while a process experiencing random/intermittent unexplained variation outside its norm is considered "out of control." Perfectly clear? Great!
+
+...In reality, that definition probably didn't make a lot of sense. Let's try again with a very practical example. The last few years, I've used weighted squat jumps (SJ) as a fatigue monitoring tool. My rationale for using weighted SJ came from my thesis and from a handful of papers that have shown SJ height from flight time may be more sensitive to fatigue state than countermovement jump (CMJ) height from flight time [@Gathercole_2015; @Hoffman_2002; @hortobgyi1991voluntary; @Sams_2014]. Each athlete will have their own "normal"--that is, a day-to-day range they will stay within when under "normal" levels of fatigue and when no training adaptations have occurred (strength changes, etc.). This range represents the athlete's typical variation in their jump performance and will be inherent to that athlete. Some athletes will have a very tight inter-day variation in jump height (< 1 cm), whereas others may have greater inter-day fluctuations (2 - 4 cm). When the athlete's jump height is within their normal range, we can say with relative certainty that the *process* of their SJ height is "in control." In the case of using SJ height as a proxy measure of fatigue state, we can assert that the athlete is not experiencing undue levels of fatigue...Well, maybe. Don't rely on a single metric to solve all of life's problems. If, however, the athlete's jump height falls below an arbitrarily set threshold (typically 1 - 2 SD below their average), they can be flagged for deeper analysis and potential intervention as their SJ height is now "out of control." This suggests they may be experiencing elevated levels of fatigue.
+
+### Performing SPC in R
+
+It's always easier to understand this stuff with visuals. If you'd like to follow along, the data can be found [here](jump-data.csv). Let's see what we're working with:
+
+```{r, echo=FALSE}
+jump.data <- read.csv('jump-data.csv')
+
+jump.data <- data.table(jump.data)
+
+jump.data$jumpDate <- as.Date(jump.data$jumpDate)
+
+knitr::kable(jump.data[1:10,])
+
+ggplot(jump.data, aes(x = jumpDate, y = flightTime)) + geom_point() + labs(title = 'Jittered Flight Time', x = 'Testing Date', y = 'Flight Time (s)') + theme_bw() + geom_jitter()
+
+```
+
+These are real flight time values measured on switch mats, although the athletes' names have been randomized. The data come from 21 vertical jump testing sessions across a fall season and include 1 "baseline" testing session and 20 in-season testing sessions that were carried out ~ 4 hours before most of the season's matches. Each athlete completed 2 - 3 trials at each testing session, and the two closest trials were stored in the monitoring database.
+
+First things first, we need to obtain session averages for each athlete. I know `dplyr` tends to be the go-to for data manipulation, so I've included both `dplyr` and `data.table` (my personal favorite) versions of the code throughout the remainder of the post. One of these days, I'll get around to discussing the usefulness of using `dplyr` and `data.table` together...one day.
+
+```{r, echo=TRUE}
+# Importing the data
+jump.data <- read.csv('jump-data.csv')
+
+# We need to convert the dates from factor to date type
+jump.data$jumpDate <- as.Date(jump.data$jumpDate)
+
+# dplyr syntax
+dplyr.jump.means <- jump.data %>% group_by(jumpDate, athlete) %>%
+  summarise(avg_ft = mean(flightTime))
+
+# data.table syntax
+jump.data <- data.table(jump.data)
+
+dt.jump.means <- jump.data[, .(avg_ft = mean(flightTime)), by = .(jumpDate, athlete)]
+```
+
+In either case, we now have mean session values for each athlete:
+
+```{r, echo=FALSE}
+knitr::kable(dt.jump.means[1:10,])
+
+ggplot(dt.jump.means, aes(x = jumpDate, y = avg_ft)) + geom_point() + labs(title = 'Jittered Average Flight Time', x = 'Testing Date', y = 'Flight Time (s)') + theme_bw() + geom_jitter()
+```
+
+We need a few more pieces of information to create control charts for our analysis--namely, each athlete's overall mean flight time and the standard deviation of their flight times:
+
+```{r, echo=TRUE}
+# dplyr syntax
+dplyr.jump.means <- dplyr.jump.means %>% group_by(athlete) %>% 
+  mutate(ind_mean = round(mean(avg_ft), 3),
+         ind_sd = round(sd(avg_ft), 3))
+
+# data.table syntax
+dt.jump.means[, ':=' (ind_mean = round(mean(avg_ft), 3), 
+                      ind_sd = round(sd(avg_ft), 3)), by = athlete]
+
+knitr::kable(dt.jump.means[1:10,])
+```
+
+Once we have the athletes' means and standard deviations, we can calculate their upper and lower control limits. In this example, I'm using limits of mean ± 1.5 SD:
+
+```{r, echo=TRUE}
+# dplyr syntax
+dplyr.jump.means <- dplyr.jump.means %>% group_by(athlete) %>%
+  mutate(upper_limit = round(ind_mean + 1.5 * ind_sd, 3),
+         lower_limit = round(ind_mean - 1.5 * ind_sd, 3)) %>% ungroup()
+
+# data.table syntax
+dt.jump.means[, ':=' (upper_limit = round(ind_mean + 1.5 * ind_sd, 3),
+                      lower_limit = round(ind_mean - 1.5 * ind_sd, 3)),
+              by = athlete]
+
+knitr::kable(dt.jump.means[1:10,])
+
+```
+
+Now we have everything we need to plot control charts for our athletes. To start, I'm only going to plot the data from a single athlete because things can get cluttered pretty quickly.
+
+```{r, echo=TRUE}
+# Plot a single athlete's data
+ggplot(dt.jump.means[athlete == 'Steve Galligan'], aes(x = jumpDate, y = avg_ft)) + 
+  geom_point() + geom_line() + 
+  geom_hline(aes(yintercept = ind_mean)) + 
+  geom_hline(aes(yintercept = upper_limit), linetype = 'dotdash') +
+  geom_hline(aes(yintercept = lower_limit), linetype = 'dotdash') + theme_bw() +
+  labs(title = 'Jumps Over Time', x = 'Testing Date', y = 'Flight Time (s)')
+```
+
+Now we have a very basic control chart worked out. Obviously, we're examining the data retrospectively for an athlete we managed *relatively* well so a majority of his flight time values fall within his control limits (the drop you see at the end was after Friday-Sunday double overtime games where he played 110 minutes each game). Examining the plot brings up an important issue with SPC, though: process shifts. If you take a look at the first few testing sessions of the season, there is a noticeable increase in his performance leading into September. From knowing this athlete, I can tell you he came in unfit and having performed zero strength training that summer so his increased jump performance was to be expected. It's safe to assume that we've captured his fitness changes in our monitoring data, and these fitness changes have created a process shift in his vertical jump performance. Not accounting for this shift will artificially inflate the control limits, which could cause us to miss otherwise important decreases in his monitoring data.
+
+So how can we deal with process shifts? Your chosen solution will ultimately boil down to how much free time you have, but I'll wager most of you reading don't have a lot. One of the easiest solutions is to use a rolling window approach to calculate your individual means and standard deviations. Like most things in sports science, there are no rules for rolling window size, but I would say whatever your window size is for your chronic rolling window (if you're using A:C calculations) is a good place to start. For us, that was a 28-day window. So let's reacalculate our limits and plot the data for the final 28 days of the season:
+
+```{r, echo=TRUE}
+# dplyr syntax using "chaining"
+dplyr.recent.jumps <- dplyr.jump.means %>% filter(jumpDate >= max(jumpDate) - 28) %>%
+  group_by(athlete) %>% mutate(ind_mean = mean(avg_ft),
+                               ind_sd = sd(avg_ft),
+                               upper_limit = ind_mean + 1.5 * ind_sd,
+                               lower_limit = ind_mean - 1.5 * ind_sd)
+
+# data.table syntax using chaining; data.table functions a little differently
+dt.recent.jumps <- dt.jump.means[jumpDate >= max(jumpDate) - 28]
+
+dt.recent.jumps[, ':=' (ind_mean = mean(avg_ft),
+                        ind_sd = sd(avg_ft)),
+                by = athlete][, ':=' (upper_limit = ind_mean + 1.5 * ind_sd,
+                                      lower_limit = ind_mean - 1.5 * ind_sd),
+                              by = athlete]
+
+ggplot(dt.recent.jumps[athlete == 'Steve Galligan'], aes(x = jumpDate, y = avg_ft)) + 
+  geom_point() + geom_line() + 
+  geom_hline(aes(yintercept = ind_mean)) + 
+  geom_hline(aes(yintercept = upper_limit), linetype = 'dotdash') +
+  geom_hline(aes(yintercept = lower_limit), linetype = 'dotdash') + theme_bw() +
+  labs(title = 'Jumps Over Time', x = 'Testing Date', y = 'Flight Time (s)')
+```
+
+In both cases, the final testing session of the season fell below the athlete's control limits, so both roads would have led to Rome. While this approach worked in the current case, you may have to adjust your window based on the frequency of your testing. For the year in question, we tested every ~ 4 days, but the next season was closer to every 10 days. Implementing a 28-day rolling window for both seasons would provide drastically different numbers of sessions for our calculations. In the case of a college sport, an alternative may be removal of the pre-season from the calculations. Ultimately, though, this will be an individualized decision based on your specific testing and monitoring setup.
+
+### Getting Fancy
+
+There are no hard and fast rules for what threshold constitutes an out of control process. For instance, a threshold of 1 SD (.16 probability of occurring by random chance) may be too reactive to otherwise harmless fluctuations in performance while a threshold of 2 SD (.025 probability of occurring by random chance) may be too strict [@Sands_2017; @Ward_2018]. Personally, I prefer a threshold of 1.5 SD (.065 probability of occurring by random chance), but other methods such as setting an "alert" threshold and a "warning" threshold (e.g. 1 SD = alert and  1.5 or 2 SD = warning) or implementing more sophisticated rules (see [Wikipedia](https://en.wikipedia.org/wiki/Control_chart#Rules_for_detecting_signals){target="_blank"} for a discussion on different rule sets) are also possible [@Ward_2018]. 
+
+For example, let's apply alert (1 SD) and warning (1.5 SD) thresholds to our data from the first example.
+
+```{r, echo=TRUE}
+# dplyr syntax
+dplyr.jump.means <- dplyr.jump.means %>% group_by(athlete) %>%
+  rename(upper_limit_1.5SD = upper_limit, lower_limit_1.5SD = lower_limit) %>%
+  mutate(upper_limit_1SD = round(ind_mean + ind_sd, 3),
+         lower_limit_1SD = round(ind_mean - ind_sd, 3)) %>% ungroup()
+
+# data.table syntax
+setnames(dt.jump.means,
+         old = c('upper_limit', 'lower_limit'),
+         new = c('upper_limit_1.5SD', 'lower_limit_1.5SD'))
+
+dt.jump.means[, ':=' (upper_limit_1SD = round(ind_mean + ind_sd, 3),
+                      lower_limit_1SD = round(ind_mean - ind_sd, 3)
+                      ), by = athlete]
+
+ggplot(dt.jump.means[athlete == 'Steve Galligan'], aes(x = jumpDate, y = avg_ft)) +
+  geom_point() +
+  geom_line() +
+  geom_hline(aes(yintercept = ind_mean)) +
+  geom_hline(aes(yintercept = lower_limit_1.5SD)) +
+  geom_hline(aes(yintercept = upper_limit_1.5SD)) +
+  geom_hline(aes(yintercept = lower_limit_1SD), linetype = 'dashed') +
+  geom_hline(aes(yintercept = upper_limit_1SD), linetype = 'dashed') +
+  theme_bw() +
+  labs(title = 'Jumps Over Time', x = 'Testing Date', y = 'Flight Time (s)')
+```
+
+It's also possible to color code the plots based on whether they violate your chosen thresholds or more advanced rule sets. The code gets very messy (I originally included example code but removed it because it was difficult to follow), so if you want to use color coding or more advanced rule sets, I would seriously recommend exploring one of the specially-built SPC packages available on CRAN. ```qcc```, for instance, can create both individual control charts ("I" charts) and EWMA-based charts. Selection on chart type will depend on the amount of data you have and the window size you've chosen.
+
+## Wrapping Up
+
+If you really want to go down the SPC rabbit hole, there are R packages dedicated to SPC analysis (```spc```, ```qicharts```, ```qcc```). I've played around with ```qcc``` a bit to create both "I" and EWMA control charts, but I don't have enough experience with the package to provide any sort of guidance.
+
+I had originally planned on covering anomaly detection in this post as well, but I'm pretty sure all our brains would be mush by the end. Look for Part 2 to drop in the next few days! In the meantime, feel free to drop me a line on [twitter](https://twitter.com/DrMattSams){target="_blank"} or email me at [samsperformancetraining@gmail.com](mailto:samsperformancetraining@gmail.com).
+
+## Code Recap
+
+To recap the code used in Part 1:
+
+```{r, eval=FALSE}
+# Required packages
+library(data.table)
+library(ggplot2)
+library(knitr)
+library(dplyr)
+
+# Importing the data
+jump.data <- read.csv('3-Individual_Monitoring/jump-data.csv')
+
+# We need to convert the dates from factor to date type
+jump.data$jumpDate <- as.Date(jump.data$jumpDate)
+
+# --- Session Averages --- #
+
+# dplyr syntax
+dplyr.jump.means <- jump.data %>% group_by(jumpDate, athlete) %>%
+  summarise(avg_ft = mean(flightTime))
+
+# data.table syntax
+jump.data <- data.table(jump.data)
+
+dt.jump.means <- jump.data[, .(avg_ft = mean(flightTime)), by = .(jumpDate, athlete)]
+
+# --- Individual Averages and SD --- #
+# dplyr syntax
+dplyr.jump.means <- dplyr.jump.means %>% group_by(athlete) %>% 
+  mutate(ind_mean = round(mean(avg_ft), 3),
+         ind_sd = round(sd(avg_ft), 3))
+
+# data.table syntax
+dt.jump.means[, ':=' (ind_mean = round(mean(avg_ft), 3), 
+                      ind_sd = round(sd(avg_ft), 3)), by = athlete]
+
+# --- Plot 1 --- #
+# Plot a single athlete's data
+ggplot(dt.jump.means[athlete == 'Steve Galligan'], aes(x = jumpDate, y = avg_ft)) + 
+  geom_point() + geom_line() + 
+  geom_hline(aes(yintercept = ind_mean)) + 
+  geom_hline(aes(yintercept = upper_limit), linetype = 'dotdash') +
+  geom_hline(aes(yintercept = lower_limit), linetype = 'dotdash') + theme_bw() +
+  labs(title = 'Jumps Over Time', x = 'Testing Date', y = 'Flight Time (s)')
+
+# --- Rolling Window and Plot --- #
+# dplyr syntax using "chaining"
+dplyr.recent.jumps <- dplyr.jump.means %>% filter(jumpDate >= max(jumpDate) - 28) %>%
+  group_by(athlete) %>% mutate(ind_mean = mean(avg_ft),
+                               ind_sd = sd(avg_ft),
+                               upper_limit = ind_mean + 1.5 * ind_sd,
+                               lower_limit = ind_mean - 1.5 * ind_sd)
+
+# data.table syntax using chaining; data.table functions a little differently
+dt.recent.jumps <- dt.jump.means[jumpDate >= max(jumpDate) - 28]
+
+dt.recent.jumps[, ':=' (ind_mean = mean(avg_ft),
+                        ind_sd = sd(avg_ft)),
+                by = athlete][, ':=' (upper_limit = ind_mean + 1.5 * ind_sd,
+                                      lower_limit = ind_mean - 1.5 * ind_sd),
+                              by = athlete]
+
+ggplot(dt.recent.jumps[athlete == 'Steve Galligan'], aes(x = jumpDate, y = avg_ft)) + 
+  geom_point() + geom_line() + 
+  geom_hline(aes(yintercept = ind_mean)) + 
+  geom_hline(aes(yintercept = upper_limit), linetype = 'dotdash') +
+  geom_hline(aes(yintercept = lower_limit), linetype = 'dotdash') + theme_bw() +
+  labs(title = 'Jumps Over Time', x = 'Testing Date', y = 'Flight Time (s)')
+
+# --- Having both alert and warning thresholds --- #
+# dplyr syntax
+dplyr.jump.means <- dplyr.jump.means %>% group_by(athlete) %>%
+  rename(upper_limit_1.5SD = upper_limit, lower_limit_1.5SD = lower_limit) %>%
+  mutate(upper_limit_1SD = round(ind_mean + ind_sd, 3),
+         lower_limit_1SD = round(ind_mean - ind_sd, 3)) %>% ungroup()
+
+# data.table syntax
+setnames(dt.jump.means,
+         old = c('upper_limit', 'lower_limit'),
+         new = c('upper_limit_1.5SD', 'lower_limit_1.5SD'))
+
+dt.jump.means[, ':=' (upper_limit_1SD = round(ind_mean + ind_sd, 3),
+                      lower_limit_1SD = round(ind_mean - ind_sd, 3)
+                      ), by = athlete]
+
+ggplot(dt.jump.means[athlete == 'Steve Galligan'], aes(x = jumpDate, y = avg_ft)) +
+  geom_point() +
+  geom_line() +
+  geom_hline(aes(yintercept = ind_mean)) +
+  geom_hline(aes(yintercept = lower_limit_1.5SD)) +
+  geom_hline(aes(yintercept = upper_limit_1.5SD)) +
+  geom_hline(aes(yintercept = lower_limit_1SD), linetype = 'dashed') +
+  geom_hline(aes(yintercept = upper_limit_1SD), linetype = 'dashed') +
+  theme_bw() +
+  labs(title = 'Jumps Over Time', x = 'Testing Date', y = 'Flight Time (s)')
+```
+
+## References

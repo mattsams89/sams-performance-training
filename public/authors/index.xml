@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Authors on Sams Performance Training</title>
+    <link>/authors/</link>
+    <description>Recent content in Authors on Sams Performance Training</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; Matt Sams {year}</copyright>
+    
+	    <atom:link href="/authors/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title></title>
+      <link>/authors/admin/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/authors/admin/</guid>
+      <description>&lt;p&gt;I’m Matt Sams, a sport scientist and strength and conditioning coach currently working as a performance analyst for America&amp;rsquo;s favorite pastime. I’ve had the chance to work with athletes in a range of sports, including soccer, basketball, volleyball, canoe/kayak, bobsled, skeleton, luge, and XC skiing.&lt;/p&gt;
+
+&lt;p&gt;My main interests are focused on maximizing athletes’ performance while managing their fatigue and injury risk. To that end, most of my work focuses on developing and implementing athlete monitoring systems and data visualizations that provide immediate, actionable feedback. Don’t let all that sport science jargon fool you, though, because I’m more than a spreadsheet junkie. I have 8 years of hands-on coaching experience with Olympic-caliber, Division 1, and Division 3 athletes. I hold a CSCS through the NSCA.&lt;/p&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Matt</title>
+      <link>/authors/matt/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>/authors/matt/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>
