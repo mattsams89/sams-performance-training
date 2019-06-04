@@ -68,7 +68,7 @@ final.model <- update(scaled.model.6, log.rpetl ~.)
 
 ## Hitting the Ground Running
 
-This post assumes you've already read [part 1](/post/2018-08-15-r-individual-monitoring/r-individual-monitoring-part-1/){target="_blank"} and [part 2](/post/2018-11-05-r-individual-monitoring-part-3/r-individual-monitoring-part-2/){target="_blank"} for "Individual Athlete Monitoring in R." If you haven't I'd suggest you go back to part 2 for some context for this post. Otherwise, you're going to be pretty lost. Let's go.
+This post assumes you've already read [part 1](/post/2018-08-15-r-individual-monitoring/r-individual-monitoring-part-1/){target="_blank"} and [part 2](/post/2018-11-05-r-individual-monitoring-part-2/r-individual-monitoring-part-2/){target="_blank"} for "Individual Athlete Monitoring in R." If you haven't I'd suggest you go back to part 2 for some context for this post. Otherwise, you're going to be pretty lost. Let's go.
 
 ### It's Predicting Time
 
