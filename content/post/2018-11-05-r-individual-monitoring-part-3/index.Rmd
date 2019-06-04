@@ -68,11 +68,11 @@ final.model <- update(scaled.model.6, log.rpetl ~.)
 
 ## Hitting the Ground Running
 
-This post assumes you've already read [part 1](/post/2018-08-15-r-individual-monitoring/r-individual-monitoring-part-1/){target="_blank"} and [part 2](/post/2018-11-05-individual-monitoring-part-2/r-individual-monitoring-part-2/){target="_blank"} for "Individual Athlete Monitoring in R." If you haven't I'd suggest you go back to part 2 for some context for this post. Otherwise, you're going to be pretty lost. Let's go.
+This post assumes you've already read [part 1](/post/2018-08-15-r-individual-monitoring/r-individual-monitoring-part-1/){target="_blank"} and [part 2](/post/2018-11-05-r-individual-monitoring-part-3/r-individual-monitoring-part-2/){target="_blank"} for "Individual Athlete Monitoring in R." If you haven't I'd suggest you go back to part 2 for some context for this post. Otherwise, you're going to be pretty lost. Let's go.
 
 ### It's Predicting Time
 
-Last time, we built a linear mixed model with the `lme4` package called `final model`. This model used two categorical fixed effects (season, phase within season) along with five grand mean centered numeric fixed effects (total distance, work rate, hi-speed running distance, time spent in drills, and total practice duration) to predict log transformed rpetl values. We further included athletes nested within season as random intercept effects in the model to reflect that we're analyzing repeated-measures data where the magnitudes of the relationships between variables may differ between athletes and between seasons. I know that's a bit of a mouthful, so seriously, go back and look at [part 2](/post/2018-11-05-individual-monitoring-part-2/r-individual-monitoring-part-2/){target="_blank"} if you're not sure what I'm talking about. The model output is below.
+Last time, we built a linear mixed model with the `lme4` package called `final model`. This model used two categorical fixed effects (season, phase within season) along with five grand mean centered numeric fixed effects (total distance, work rate, hi-speed running distance, time spent in drills, and total practice duration) to predict log transformed rpetl values. We further included athletes nested within season as random intercept effects in the model to reflect that we're analyzing repeated-measures data where the magnitudes of the relationships between variables may differ between athletes and between seasons. I know that's a bit of a mouthful, so seriously, go back and look at [part 2](/post/2018-11-05-r-individual-monitoring-part-2/r-individual-monitoring-part-2/){target="_blank"} if you're not sure what I'm talking about. The model output is below.
 
 ```{r, echo=FALSE}
 summary(final.model)
