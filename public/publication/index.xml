@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Publications on Sams Performance Training</title>
+    <link>/publication/</link>
+    <description>Recent content in Publications on Sams Performance Training</description>
+    <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator>
+    <language>en-us</language>
+    <copyright>&amp;copy; Matt Sams {year}</copyright>
+    <lastBuildDate>Wed, 01 May 2019 00:00:00 +0000</lastBuildDate>
+    
+	    <atom:link href="/publication/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Speed play: Guiding skill through a seamlessly sequenced sprint curriculum</title>
+      <link>/publication/speed-play/speed-play/</link>
+      <pubDate>Wed, 01 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/publication/speed-play/speed-play/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Cluster set loading in the back squat: Kinetic and kinematic implications</title>
+      <link>/publication/back-squat-cluster-kinematic-kinetic/back-squat-cluster-kinematic-kinetic/</link>
+      <pubDate>Tue, 01 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/publication/back-squat-cluster-kinematic-kinetic/back-squat-cluster-kinematic-kinetic/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Repetition-to-repetition differences using cluster and accentuated eccentric loading in the back squat</title>
+      <link>/publication/back-squat-cluster-ael-repetition-differences/back-squat-cluster-ael-repetition-differences/</link>
+      <pubDate>Sun, 08 Jul 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/publication/back-squat-cluster-ael-repetition-differences/back-squat-cluster-ael-repetition-differences/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Accentuated eccentric loading and cluster set configurations in the back squat: A kinetic and kinematic analysis</title>
+      <link>/publication/ael-kinematic-kinetic-analysis/ael-kinematic-kinetic-analysis/</link>
+      <pubDate>Wed, 20 Jun 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/publication/ael-kinematic-kinetic-analysis/ael-kinematic-kinetic-analysis/</guid>
+      <description></description>
+    </item>
+    
+  </channel>
+</rss>

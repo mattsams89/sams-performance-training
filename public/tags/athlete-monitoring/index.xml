@@ -7,7 +7,7 @@
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator>
     <language>en-us</language>
     <copyright>&amp;copy; Matt Sams {year}</copyright>
-    <lastBuildDate>Mon, 05 Nov 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 01 May 2019 00:00:00 +0000</lastBuildDate>
     
 	    <atom:link href="/tags/athlete-monitoring/index.xml" rel="self" type="application/rss+xml" />
     
@@ -1442,6 +1442,15 @@ final.model &amp;lt;- update(scaled.model.6, log.rpetl ~.)&lt;/code&gt;&lt;/pre&
 &lt;/div&gt;
 &lt;/div&gt;
 </description>
+    </item>
+    
+    <item>
+      <title>Speed play: Guiding skill through a seamlessly sequenced sprint curriculum</title>
+      <link>/publication/speed-play/speed-play/</link>
+      <pubDate>Wed, 01 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/publication/speed-play/speed-play/</guid>
+      <description></description>
     </item>
     
     <item>

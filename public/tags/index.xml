@@ -7,7 +7,7 @@
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator>
     <language>en-us</language>
     <copyright>&amp;copy; Matt Sams {year}</copyright>
-    <lastBuildDate>Mon, 05 Nov 2018 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Wed, 01 May 2019 00:00:00 +0000</lastBuildDate>
     
 	    <atom:link href="/tags/index.xml" rel="self" type="application/rss+xml" />
     
@@ -15,9 +15,63 @@
     <item>
       <title>athlete monitoring</title>
       <link>/tags/athlete-monitoring/</link>
-      <pubDate>Mon, 05 Nov 2018 00:00:00 +0000</pubDate>
+      <pubDate>Wed, 01 May 2019 00:00:00 +0000</pubDate>
       
       <guid>/tags/athlete-monitoring/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>speed development</title>
+      <link>/tags/speed-development/</link>
+      <pubDate>Wed, 01 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/speed-development/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>training theory</title>
+      <link>/tags/training-theory/</link>
+      <pubDate>Wed, 01 May 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/training-theory/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>performance</title>
+      <link>/tags/performance/</link>
+      <pubDate>Tue, 01 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/performance/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>rest</title>
+      <link>/tags/rest/</link>
+      <pubDate>Tue, 01 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/rest/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>strength and conditioning</title>
+      <link>/tags/strength-and-conditioning/</link>
+      <pubDate>Tue, 01 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/strength-and-conditioning/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>training</title>
+      <link>/tags/training/</link>
+      <pubDate>Tue, 01 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/training/</guid>
       <description></description>
     </item>
     
@@ -36,6 +90,69 @@
       <pubDate>Mon, 05 Nov 2018 00:00:00 +0000</pubDate>
       
       <guid>/tags/workload-management/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>eccentric overload</title>
+      <link>/tags/eccentric-overload/</link>
+      <pubDate>Sun, 08 Jul 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/eccentric-overload/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>potentiation</title>
+      <link>/tags/potentiation/</link>
+      <pubDate>Sun, 08 Jul 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/potentiation/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>power</title>
+      <link>/tags/power/</link>
+      <pubDate>Sun, 08 Jul 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/power/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>programming</title>
+      <link>/tags/programming/</link>
+      <pubDate>Sun, 08 Jul 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/programming/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>rate of force development</title>
+      <link>/tags/rate-of-force-development/</link>
+      <pubDate>Sun, 08 Jul 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/rate-of-force-development/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>resistance training</title>
+      <link>/tags/resistance-training/</link>
+      <pubDate>Sun, 08 Jul 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/resistance-training/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>strength</title>
+      <link>/tags/strength/</link>
+      <pubDate>Sun, 08 Jul 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/tags/strength/</guid>
       <description></description>
     </item>
     
