@@ -1,0 +1,1 @@
+.dark h1{color:{{ .Get "menu_text_active" }}}
