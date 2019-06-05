@@ -27,7 +27,6 @@ output:
     toc: yes
 ---
 
-<script src="/rmarkdown-libs/kePrint/kePrint.js"></script>
 
 <div id="TOC">
 <ul>
@@ -125,9 +124,8 @@ training.data$log.prediction &lt;- predict(final.model, training.data)
 # Back-transform the predictions to raw rpetl values
 training.data[, prediction := exp(log.prediction)]
 
-knitr::kable(training.data[1:10, c(&quot;athlete&quot;, &quot;date&quot;, &quot;rpetl&quot;, &quot;prediction&quot;)]) %&gt;%
-  kable_styling(c(&quot;responsive&quot;,&quot;condensed&quot;))</code></pre>
-<table class="table table-responsive table-condensed" style="margin-left: auto; margin-right: auto;">
+knitr::kable(training.data[1:10, c(&quot;athlete&quot;, &quot;date&quot;, &quot;rpetl&quot;, &quot;prediction&quot;)])</code></pre>
+<table>
 <thead>
 <tr>
 <th style="text-align:left;">

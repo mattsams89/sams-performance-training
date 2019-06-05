@@ -101,8 +101,7 @@ training.data$log.prediction <- predict(final.model, training.data)
 # Back-transform the predictions to raw rpetl values
 training.data[, prediction := exp(log.prediction)]
 
-knitr::kable(training.data[1:10, c("athlete", "date", "rpetl", "prediction")]) %>%
-  kable_styling(c("responsive","condensed"))
+knitr::kable(training.data[1:10, c("athlete", "date", "rpetl", "prediction")])
 ```
 
 Notice the predictions aren't spot-on. We can quantify our model's prediction error at both the group level and individual level. Model error is typically reported as mean absolute error (MAE) or root mean square error (RMSE). [@Ward_2018] recommend using a combination of the between-subject and within-subject RMSE (a.k.a. root mean square deviation) to set limits and confidence intervals for truly anomalous prediction errors. A drawback to RMSE is that it penalizes outliers more heavily compared to MAE. Since we're interested in identifying outliers in this case, we might examine the MAE instead. But in the words of the Old El Paso commercial, "Por que no los dos?" We can examine both approaches pretty easily with the `caret` package.
