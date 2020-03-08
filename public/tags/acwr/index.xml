@@ -2,22 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>ACWR on Sams Performance Training</title>
-    <link>/tags/acwr/</link>
+    <link>https://mattsams89.netlify.com/tags/acwr/</link>
     <description>Recent content in ACWR on Sams Performance Training</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator>
     <language>en-us</language>
     <copyright>&amp;copy; Matt Sams {year}</copyright>
     <lastBuildDate>Sat, 09 Jun 2018 00:00:00 +0000</lastBuildDate>
     
-	    <atom:link href="/tags/acwr/index.xml" rel="self" type="application/rss+xml" />
+	    <atom:link href="https://mattsams89.netlify.com/tags/acwr/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Leveraging R to Calculate Acute:Chronic Workload Ratios</title>
-      <link>/post/2018-06-09-r-acwr-intro/r-acwr-intro/</link>
+      <link>https://mattsams89.netlify.com/post/2018-06-09-r-acwr-intro/r-acwr-intro/</link>
       <pubDate>Sat, 09 Jun 2018 00:00:00 +0000</pubDate>
       
-      <guid>/post/2018-06-09-r-acwr-intro/r-acwr-intro/</guid>
+      <guid>https://mattsams89.netlify.com/post/2018-06-09-r-acwr-intro/r-acwr-intro/</guid>
       <description>
 
 &lt;div id=&#34;TOC&#34;&gt;
@@ -139,7 +139,7 @@ EMA(training_load, n = 1, ratio = 2/(1+28))&lt;/code&gt;&lt;/pre&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-06-09-r-acwr-intro/index_files/figure-html/unnamed-chunk-1-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://mattsams89.netlify.com/post/2018-06-09-r-acwr-intro/index_files/figure-html/unnamed-chunk-1-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div id=&#34;more-than-one-way-to-skin-a-cat&#34; class=&#34;section level2&#34;&gt;
@@ -377,7 +377,7 @@ ggplot(tl.data, aes(x = training.date)) + geom_col(aes(y = tl)) +
   scale_y_continuous(sec.axis = sec_axis(~./1000, name = &amp;#39;SMA ACWR&amp;#39;)) + 
   theme_bw() + facet_wrap(~athlete) + 
   labs(title = &amp;#39;TL with SMA ACWR&amp;#39;, x = &amp;#39;Training Date&amp;#39;, y = &amp;#39;TL&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-06-09-r-acwr-intro/index_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://mattsams89.netlify.com/post/2018-06-09-r-acwr-intro/index_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Unfortunately, calling &lt;code&gt;rollapplyr&lt;/code&gt; is a bit of a handful compared to &lt;code&gt;SMA&lt;/code&gt;, but whatever. As you can see, we now have individual ACWRs using the “traditional” calculation method. How about using exponentially-weighted moving averages? Thankfully, this is a lot easier since we can use &lt;code&gt;EMA&lt;/code&gt;:&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#Packages needed
 library(data.table)
@@ -395,7 +395,7 @@ ggplot(tl.data, aes(x = training.date)) + geom_col(aes(y = tl)) +
   scale_y_continuous(sec.axis = sec_axis(~./1000, name = &amp;#39;EMA ACWR&amp;#39;)) + 
   theme_bw() + facet_wrap(~athlete) + 
   labs(title = &amp;#39;TL with EMA ACWR&amp;#39;, x = &amp;#39;Training Date&amp;#39;, y = &amp;#39;TL&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-06-09-r-acwr-intro/index_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://mattsams89.netlify.com/post/2018-06-09-r-acwr-intro/index_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Alternatively, if you want the EMA to accumulate before returning values, you would call:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;tl.data[, ema.acute := EMA(tl, n = 7, ratio = 2/(1+7)), by = .(athlete)]
 tl.data[, ema.chronic := EMA(tl, n = 28, ratio = 2/(1+28)), by = .(athlete)]
@@ -420,7 +420,7 @@ ggplot(tl.data[athlete == &amp;#39;Urja Chaudhry&amp;#39;], aes(x = as.Date(trai
   scale_y_continuous(sec.axis = sec_axis(~./1000, name = &amp;#39;ACWR&amp;#39;)) + 
   labs(title = &amp;#39;ACWR Comparison&amp;#39;, x = &amp;#39;Training Date&amp;#39;, y = &amp;#39;TL&amp;#39;, colour = &amp;#39;Method&amp;#39;) + 
   theme_bw() + theme(legend.position = &amp;#39;bottom&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-06-09-r-acwr-intro/index_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://mattsams89.netlify.com/post/2018-06-09-r-acwr-intro/index_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Hopefully you notice there are some pretty stark diffferences between the SMA and EMA methods, with the differences in the two EMA approaches mostly disappearing by day 45. This echoes what Windt and Gabbett &lt;span class=&#34;citation&#34;&gt;[&lt;a href=&#34;#ref-Windt_2018&#34; role=&#34;doc-biblioref&#34;&gt;9&lt;/a&gt;]&lt;/span&gt; say at the end of their editorial: explicity detail how you’re calculating your ACWRs!&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;coupled-vs.-uncoupled&#34; class=&#34;section level2&#34;&gt;
@@ -438,7 +438,7 @@ ggplot(tl.data[athlete == &amp;#39;Urja Chaudhry&amp;#39;], aes(x = as.Date(trai
   scale_y_continuous(sec.axis = sec_axis(~./1000, name = &amp;#39;ACWR&amp;#39;)) +
   labs(title = &amp;#39;Coupled vs. Uncoupled&amp;#39;, x = &amp;#39;Training Date&amp;#39;, y = &amp;#39;TL&amp;#39;, colour = &amp;#39;Method&amp;#39;) +
   theme_bw() + theme(legend.position = &amp;#39;bottom&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-06-09-r-acwr-intro/index_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://mattsams89.netlify.com/post/2018-06-09-r-acwr-intro/index_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;And that’s it. There are some definite differences in the two methods, so again, be consistent in how you choose to perform your analysis.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;wrapping-up&#34; class=&#34;section level2&#34;&gt;

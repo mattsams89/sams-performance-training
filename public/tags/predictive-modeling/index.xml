@@ -2,22 +2,22 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>predictive modeling on Sams Performance Training</title>
-    <link>/tags/predictive-modeling/</link>
+    <link>https://mattsams89.netlify.com/tags/predictive-modeling/</link>
     <description>Recent content in predictive modeling on Sams Performance Training</description>
     <generator>Source Themes Academic (https://sourcethemes.com/academic/)</generator>
     <language>en-us</language>
     <copyright>&amp;copy; Matt Sams {year}</copyright>
     <lastBuildDate>Mon, 05 Nov 2018 00:00:00 +0000</lastBuildDate>
     
-	    <atom:link href="/tags/predictive-modeling/index.xml" rel="self" type="application/rss+xml" />
+	    <atom:link href="https://mattsams89.netlify.com/tags/predictive-modeling/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Individualized Athlete Monitoring in R, Part 3 (Interpreting the Predictive Model)</title>
-      <link>/post/2018-11-05-r-individual-monitoring-part-3/r-individual-monitoring-part-2/</link>
+      <link>https://mattsams89.netlify.com/post/2018-11-05-r-individual-monitoring-part-3/r-individual-monitoring-part-2/</link>
       <pubDate>Mon, 05 Nov 2018 00:00:00 +0000</pubDate>
       
-      <guid>/post/2018-11-05-r-individual-monitoring-part-3/r-individual-monitoring-part-2/</guid>
+      <guid>https://mattsams89.netlify.com/post/2018-11-05-r-individual-monitoring-part-3/r-individual-monitoring-part-2/</guid>
       <description>
 
 &lt;div id=&#34;TOC&#34;&gt;
@@ -32,10 +32,10 @@
 
 &lt;div id=&#34;hitting-the-ground-running&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Hitting the Ground Running&lt;/h2&gt;
-&lt;p&gt;This post assumes you’ve already read &lt;a href=&#34;/post/2018-08-15-r-individual-monitoring/r-individual-monitoring-part-1/&#34; target=&#34;_blank&#34;&gt;part 1&lt;/a&gt; and &lt;a href=&#34;/post/2018-11-05-r-individual-monitoring-part-2/r-individual-monitoring-part-2/&#34; target=&#34;_blank&#34;&gt;part 2&lt;/a&gt; for “Individual Athlete Monitoring in R.” If you haven’t I’d suggest you go back to part 2 for some context for this post. Otherwise, you’re going to be pretty lost. Let’s go.&lt;/p&gt;
+&lt;p&gt;This post assumes you’ve already read &lt;a href=&#34;https://mattsams89.netlify.com/post/2018-08-15-r-individual-monitoring/r-individual-monitoring-part-1/&#34; target=&#34;_blank&#34;&gt;part 1&lt;/a&gt; and &lt;a href=&#34;https://mattsams89.netlify.com/post/2018-11-05-r-individual-monitoring-part-2/r-individual-monitoring-part-2/&#34; target=&#34;_blank&#34;&gt;part 2&lt;/a&gt; for “Individual Athlete Monitoring in R.” If you haven’t I’d suggest you go back to part 2 for some context for this post. Otherwise, you’re going to be pretty lost. Let’s go.&lt;/p&gt;
 &lt;div id=&#34;its-predicting-time&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;It’s Predicting Time&lt;/h3&gt;
-&lt;p&gt;Last time, we built a linear mixed model with the &lt;code&gt;lme4&lt;/code&gt; package called &lt;code&gt;final model&lt;/code&gt;. This model used two categorical fixed effects (season, phase within season) along with five grand mean centered numeric fixed effects (total distance, work rate, hi-speed running distance, time spent in drills, and total practice duration) to predict log transformed rpetl values. We further included athletes nested within season as random intercept effects in the model to reflect that we’re analyzing repeated-measures data where the magnitudes of the relationships between variables may differ between athletes and between seasons. I know that’s a bit of a mouthful, so seriously, go back and look at &lt;a href=&#34;/post/2018-11-05-r-individual-monitoring-part-2/r-individual-monitoring-part-2/&#34; target=&#34;_blank&#34;&gt;part 2&lt;/a&gt; if you’re not sure what I’m talking about. The model output is below.&lt;/p&gt;
+&lt;p&gt;Last time, we built a linear mixed model with the &lt;code&gt;lme4&lt;/code&gt; package called &lt;code&gt;final model&lt;/code&gt;. This model used two categorical fixed effects (season, phase within season) along with five grand mean centered numeric fixed effects (total distance, work rate, hi-speed running distance, time spent in drills, and total practice duration) to predict log transformed rpetl values. We further included athletes nested within season as random intercept effects in the model to reflect that we’re analyzing repeated-measures data where the magnitudes of the relationships between variables may differ between athletes and between seasons. I know that’s a bit of a mouthful, so seriously, go back and look at &lt;a href=&#34;https://mattsams89.netlify.com/post/2018-11-05-r-individual-monitoring-part-2/r-individual-monitoring-part-2/&#34; target=&#34;_blank&#34;&gt;part 2&lt;/a&gt; if you’re not sure what I’m talking about. The model output is below.&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;## Linear mixed model fit by maximum likelihood  [&amp;#39;lmerMod&amp;#39;]
 ## Formula: log.rpetl ~ (1 | season/athlete) + odometer + work.rate + hi.run +  
 ##     field.minutes + duration + season + phase
@@ -447,7 +447,7 @@ ggplot(prediction.data, aes(x = date, y = prediction.error)) +
        x = &amp;quot;Date&amp;quot;,
        y = &amp;quot;Actual - Predicted RPETL (AU)&amp;quot;) +
   geom_hline(aes(yintercept = 0), linetype = &amp;quot;dotdash&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-11-05-r-individual-monitoring-part-3/index_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://mattsams89.netlify.com/post/2018-11-05-r-individual-monitoring-part-3/index_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# MAE plot
 ggplot(prediction.data, aes(x = date, y = prediction.error)) +
   geom_pointrange(aes(ymin = prediction.error - individual.MAE,
@@ -459,9 +459,9 @@ ggplot(prediction.data, aes(x = date, y = prediction.error)) +
        x = &amp;quot;Date&amp;quot;,
        y = &amp;quot;Actual - Predicted RPETL (AU)&amp;quot;) +
   geom_hline(aes(yintercept = 0), linetype = &amp;quot;dotdash&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-11-05-r-individual-monitoring-part-3/index_files/figure-html/unnamed-chunk-6-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://mattsams89.netlify.com/post/2018-11-05-r-individual-monitoring-part-3/index_files/figure-html/unnamed-chunk-6-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;It’s pretty difficult to make out what’s happening at the group level, so let’s zoom in on a single athlete (Samuel Llanas Brito).&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-11-05-r-individual-monitoring-part-3/index_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;img src=&#34;/post/2018-11-05-r-individual-monitoring-part-3/index_files/figure-html/unnamed-chunk-7-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://mattsams89.netlify.com/post/2018-11-05-r-individual-monitoring-part-3/index_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;img src=&#34;https://mattsams89.netlify.com/post/2018-11-05-r-individual-monitoring-part-3/index_files/figure-html/unnamed-chunk-7-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;For Samuel, both the RMSE and MAE methods are in relative agreement with two sessions drastically above predicted, three sessions just above the error limits, and one session well below what was predicted. Having access to the original data, I can tell you the first anomalous point comes from the athlete’s first practice back from a contact injury sustained 9 days before. It’s safe to assume that contributed to the anomalous score. Similarly, the second point came after his first match involvement following his injury. We can assume some lingering match fatigue may have contributed, which is also likely reflected in his above-prediction scores on Oct. 31st and Nov. 2nd. For him, an altered training setup (bike/pool fitness, play as a neutral, etc.) with more gradual RTP may have been preferrable to immediate full involvement. Of course, it’s easy to say that now, but examining this data retroactively can also help us understand how we can improve our RTP process in the future.&lt;/p&gt;
 &lt;p&gt;As for the extreme over-prediction on November 3rd, that was an intrasquad during a bye week. Having been with the team through a number of these over the years, late-season intrasquads tended to be more laid back and ended with a low-stakes round of penalty kicks where the athletes inentionally attempted to distract the athlete taking the PK. The relaxed atmosphere and extended low-intensity (and sometimes silly) round of PKs probably contributed to the lower-than-predicted rpetl values. And if you look back at the other athletes’ data, you’ll notice a similar trend for most of the team. Again, situations like this are where adding additional complexity to the model (percent of practice time spent in drills, maybe? Feel free to experiment.) may improve its predictive power.&lt;/p&gt;
 &lt;/div&gt;
@@ -486,10 +486,10 @@ ggplot(prediction.data, aes(x = date, y = prediction.error)) +
     
     <item>
       <title>Individualized Athlete Monitoring in R, Part 2 (Building a Predictive Model)</title>
-      <link>/post/2018-11-05-r-individual-monitoring-part-2/r-individual-monitoring-part-2/</link>
+      <link>https://mattsams89.netlify.com/post/2018-11-05-r-individual-monitoring-part-2/r-individual-monitoring-part-2/</link>
       <pubDate>Mon, 05 Nov 2018 00:00:00 +0000</pubDate>
       
-      <guid>/post/2018-11-05-r-individual-monitoring-part-2/r-individual-monitoring-part-2/</guid>
+      <guid>https://mattsams89.netlify.com/post/2018-11-05-r-individual-monitoring-part-2/r-individual-monitoring-part-2/</guid>
       <description>
 
 &lt;div id=&#34;TOC&#34;&gt;
@@ -1022,7 +1022,7 @@ rpe.data[, c(&amp;quot;field.minutes&amp;quot;, &amp;quot;odometer&amp;quot;, &a
 # visualize the correlation matrix from cor()
 corrplot(corr = cor(rpe.data[, field.minutes:rpetl]), 
          method = &amp;quot;number&amp;quot;, type = &amp;quot;upper&amp;quot;, diag = FALSE)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-11-05-r-individual-monitoring-part-2/index_files/figure-html/unnamed-chunk-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://mattsams89.netlify.com/post/2018-11-05-r-individual-monitoring-part-2/index_files/figure-html/unnamed-chunk-2-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Just as suspected, we have a nearly perfect correlation (0.94) between total distance and PL. A general rule of thumb I’ve seen when it comes to multicollinearity is a correlation coefficient &amp;gt; 0.8 or 0.9, so our 0.94 between total distance and PL definitely fits the bill. In such cases, you could choose either variable with essentially interchangeable results. For sake of consistency with other research, I’m going to use total distance, but you’re welcome to re-run the model with PL instead.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Drop player load from the data frame
 rpe.data$plyr.ld &amp;lt;- NULL
@@ -1030,18 +1030,18 @@ rpe.data$plyr.ld &amp;lt;- NULL
 # re-visualize the data
 corrplot(corr = cor(rpe.data[, odometer:rpetl]), 
          method = &amp;quot;number&amp;quot;, type = &amp;quot;upper&amp;quot;, diag = FALSE)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-11-05-r-individual-monitoring-part-2/index_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://mattsams89.netlify.com/post/2018-11-05-r-individual-monitoring-part-2/index_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;That’s better. Let’s get to model building.&lt;/p&gt;
 &lt;div id=&#34;visualizing-the-data&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Visualizing the Data&lt;/h3&gt;
 &lt;p&gt;The first step in the model building process is always to examine your data visually. Visualizations help us understand what we’re working with and can aid us in fitting models that are appropriate for the dataset. Let’s start off by plotting histograms of the pooled rpetl values and rpetl for each season.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# plot an overall histogram of the rpetl data
 ggplot(rpe.data, aes(x = rpetl)) + geom_histogram() + theme_bw()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-11-05-r-individual-monitoring-part-2/index_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://mattsams89.netlify.com/post/2018-11-05-r-individual-monitoring-part-2/index_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# plot individual histograms for each season
 ggplot(rpe.data, aes(x = rpetl)) + geom_histogram() + facet_wrap(~season) + 
   theme_bw()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-11-05-r-individual-monitoring-part-2/index_files/figure-html/unnamed-chunk-4-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://mattsams89.netlify.com/post/2018-11-05-r-individual-monitoring-part-2/index_files/figure-html/unnamed-chunk-4-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;In both views of the data, there’s some pretty severe positive skew going on. If you’re familiar with common statistical practices in sports science, you already know how we’re going to deal with this…but humor me for now, please.&lt;/p&gt;
 &lt;p&gt;Let’s go ahead and plot the relationships between each of the potential predictor variables and rpetl. Each colored line represents the regression line for its respective season. We’ll leverage the &lt;code&gt;gridExtra&lt;/code&gt; package to combine the individual plots into a single graphic.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;rpe.minutes &amp;lt;- ggplot(rpe.data, aes(x = field.minutes, y = rpetl)) + geom_point() + 
@@ -1060,7 +1060,7 @@ rpe.duration &amp;lt;- ggplot(rpe.data, aes(x = duration, y = rpetl)) + geom_poi
   geom_smooth(aes(colour = season), method = &amp;quot;lm&amp;quot;, se = FALSE) + theme_bw()
 
 gridExtra::grid.arrange(rpe.minutes, rpe.odometer, rpe.rate, rpe.hirun, rpe.duration)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-11-05-r-individual-monitoring-part-2/index_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://mattsams89.netlify.com/post/2018-11-05-r-individual-monitoring-part-2/index_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;This time, pay attention to the shape of the relationships (using &lt;code&gt;colour&lt;/code&gt; on the plots was a jumbled mess, so use your imagination or experiment with facetting by season for each variable). In each case, as the values of the variables increase, the spread of the resultant rpetl values also increases. Again, you probably know how we’re going to deal with this, but let’s start off with some basic models first.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;building-the-model&#34; class=&#34;section level3&#34;&gt;
@@ -1094,7 +1094,7 @@ summary(random.intercept.model)&lt;/code&gt;&lt;/pre&gt;
 ## (Intercept)   201.29      16.89   11.92&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;This is called the random intercept-only model because, well, that’s the only thing in the model. In &lt;code&gt;lmer&lt;/code&gt; random effects are defined with &lt;code&gt;(random slope|random intercept)&lt;/code&gt;. This is where things get really complicated, and to be honest, I don’t completely understand all the intricacies. Regardless, the general gist is that we can model differences in both the level and slope of the relationship between the predictor variables and rpetl.&lt;/p&gt;
 &lt;p&gt;In the above model, we’ve defined athlete nested within season as a random intercept effect. That means the model assumes the slope of the relationship between the predictors and sRPE is the same across athletes, but the intercept of the model for each athlete is in a different location each season. This makes sense when you think about it. We know sRPE is a “global” indicator of training intensity; that is, it’s affected by both the physiological and psychological state of the athlete (fitness level, fatigue, outside stressors, etc.). So we would expect the resultant rpetl to differ in magnitude between athletes and to differ within athletes across seasons. We can see this in the example plot below. Notice a majority of the athletes’ regression lines are in different locations.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-11-05-r-individual-monitoring-part-2/index_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://mattsams89.netlify.com/post/2018-11-05-r-individual-monitoring-part-2/index_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;We could also have a random slope-only model. In that case, the slope of the relationship between the predictors and the DV is allowed to vary, whereas the intercepts are not. In reality, this type of model would make little sense most of the time as differences in slopes would typically lead to differences in intercepts as well.&lt;/p&gt;
 &lt;p&gt;And finally, we can model both random slopes and random intercepts. In this case, both the level and slope of the relationship are allowed to differ. There is some evidence to support this approach as &lt;span class=&#34;citation&#34;&gt;[&lt;a href=&#34;#ref-Bartlett_2017&#34; role=&#34;doc-biblioref&#34;&gt;1&lt;/a&gt;]&lt;/span&gt; showed variable importance differs across athletes, but modeling something like that is well beyond an introduction to the method. We’ll stick to a random intercept-only model for today.&lt;/p&gt;
 &lt;div id=&#34;adding-fixed-effects&#34; class=&#34;section level4&#34;&gt;
@@ -1331,9 +1331,9 @@ rpe.scaled[, c(&amp;quot;field.minutes&amp;quot;, &amp;quot;odometer&amp;quot;, 
 &lt;h4&gt;Lions and Tigers and Heteroscedasticity, Oh My!&lt;/h4&gt;
 &lt;p&gt;So how well does our model fit the data? Let’s plot the residuals to find out.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;plot(scaled.model.6)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-11-05-r-individual-monitoring-part-2/index_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://mattsams89.netlify.com/post/2018-11-05-r-individual-monitoring-part-2/index_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;plot(lm(predict(scaled.model.6, rpe.scaled) ~ rpe.scaled$rpetl))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-11-05-r-individual-monitoring-part-2/index_files/figure-html/unnamed-chunk-15-2.png&#34; width=&#34;672&#34; /&gt;&lt;img src=&#34;/post/2018-11-05-r-individual-monitoring-part-2/index_files/figure-html/unnamed-chunk-15-3.png&#34; width=&#34;672&#34; /&gt;&lt;img src=&#34;/post/2018-11-05-r-individual-monitoring-part-2/index_files/figure-html/unnamed-chunk-15-4.png&#34; width=&#34;672&#34; /&gt;&lt;img src=&#34;/post/2018-11-05-r-individual-monitoring-part-2/index_files/figure-html/unnamed-chunk-15-5.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://mattsams89.netlify.com/post/2018-11-05-r-individual-monitoring-part-2/index_files/figure-html/unnamed-chunk-15-2.png&#34; width=&#34;672&#34; /&gt;&lt;img src=&#34;https://mattsams89.netlify.com/post/2018-11-05-r-individual-monitoring-part-2/index_files/figure-html/unnamed-chunk-15-3.png&#34; width=&#34;672&#34; /&gt;&lt;img src=&#34;https://mattsams89.netlify.com/post/2018-11-05-r-individual-monitoring-part-2/index_files/figure-html/unnamed-chunk-15-4.png&#34; width=&#34;672&#34; /&gt;&lt;img src=&#34;https://mattsams89.netlify.com/post/2018-11-05-r-individual-monitoring-part-2/index_files/figure-html/unnamed-chunk-15-5.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Holy heteroscedasticity! That’s not what you want to see. If you’re unfamiliar, heteroscedasticity is more than just that one word your stats professor could never pronounce. One of the assumptions of linear models is that the model variance is consistent across all levels of the predictors. The fan-shaped residuals suggest this isn’t the case. Instead, as the predictors increase, the error in the prediction increases (variability in the athletes’ responses increases). That’s less than ideal when we’re attempting to predict rpetl. On the bright side, though, the Q-Q plot suggests the residuals are &lt;em&gt;relatively&lt;/em&gt; normal.&lt;/p&gt;
 &lt;p&gt;Given we’re dealing with heteroscedastic–but relatively normal–residuals, one way to correct heteroscedasticity in our model is transformation of the dependent variable. Since rpetl is positively skewed, our main options are log transformation and square root transformation. Both tend to be useful for “pulling in” the tail of a skewed distribution, but log transformation is the more common of the two in sports science research. &lt;a href=&#34;http://www.sportsci.org/resource/stats/logtrans.html&#34; target=&#34;_blank&#34;&gt;Hopkins&lt;/a&gt; goes into some detail as to why if you’re interested. Also, there’s some discussion on log transformation in chapter 5 of &lt;span class=&#34;citation&#34;&gt;[&lt;a href=&#34;#ref-Field_2012&#34; role=&#34;doc-biblioref&#34;&gt;3&lt;/a&gt;]&lt;/span&gt;. Let’s add natural logged rpetl to the rpe.scaled data frame then re-run model 6. We’ll call this model final.model.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;rpe.scaled[, log.rpetl := log(rpetl)]
@@ -1403,15 +1403,15 @@ final.model &amp;lt;- update(scaled.model.6, log.rpetl ~.)&lt;/code&gt;&lt;/pre&
 ## convergence code: 0
 ## boundary (singular) fit: see ?isSingular&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;plot(final.model)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-11-05-r-individual-monitoring-part-2/index_files/figure-html/unnamed-chunk-16-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://mattsams89.netlify.com/post/2018-11-05-r-individual-monitoring-part-2/index_files/figure-html/unnamed-chunk-16-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;plot(lm(predict(final.model, rpe.scaled) ~ rpe.scaled$log.rpetl))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-11-05-r-individual-monitoring-part-2/index_files/figure-html/unnamed-chunk-16-2.png&#34; width=&#34;672&#34; /&gt;&lt;img src=&#34;/post/2018-11-05-r-individual-monitoring-part-2/index_files/figure-html/unnamed-chunk-16-3.png&#34; width=&#34;672&#34; /&gt;&lt;img src=&#34;/post/2018-11-05-r-individual-monitoring-part-2/index_files/figure-html/unnamed-chunk-16-4.png&#34; width=&#34;672&#34; /&gt;&lt;img src=&#34;/post/2018-11-05-r-individual-monitoring-part-2/index_files/figure-html/unnamed-chunk-16-5.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://mattsams89.netlify.com/post/2018-11-05-r-individual-monitoring-part-2/index_files/figure-html/unnamed-chunk-16-2.png&#34; width=&#34;672&#34; /&gt;&lt;img src=&#34;https://mattsams89.netlify.com/post/2018-11-05-r-individual-monitoring-part-2/index_files/figure-html/unnamed-chunk-16-3.png&#34; width=&#34;672&#34; /&gt;&lt;img src=&#34;https://mattsams89.netlify.com/post/2018-11-05-r-individual-monitoring-part-2/index_files/figure-html/unnamed-chunk-16-4.png&#34; width=&#34;672&#34; /&gt;&lt;img src=&#34;https://mattsams89.netlify.com/post/2018-11-05-r-individual-monitoring-part-2/index_files/figure-html/unnamed-chunk-16-5.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;While still not perfect, log transforming rpetl has improved our heteroscedasticity situation. I have a feeling there’s an interaction missing from the fixed effects, but I’d rather not overcomplicate things today.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div id=&#34;wrapping-up&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Wrapping Up&lt;/h3&gt;
-&lt;p&gt;Now that we have our predictive model, the next step will be using the model to predict rpetl values and (hopefully) identify anomalous responses. Because this post is already super long, I’ve moved the predictive portion into a standalone post. But never fear, I’ve already written &lt;a href=&#34;/post/r-individual-monitoring-part-3/&#34; target=&#34;_blank&#34;&gt;part 3&lt;/a&gt;, so there won’t be a three month hiatius between posts! Once you’ve recovered from part 2, head on over to part 3 for the epic conclusion…or something.&lt;/p&gt;
+&lt;p&gt;Now that we have our predictive model, the next step will be using the model to predict rpetl values and (hopefully) identify anomalous responses. Because this post is already super long, I’ve moved the predictive portion into a standalone post. But never fear, I’ve already written &lt;a href=&#34;https://mattsams89.netlify.com/post/r-individual-monitoring-part-3/&#34; target=&#34;_blank&#34;&gt;part 3&lt;/a&gt;, so there won’t be a three month hiatius between posts! Once you’ve recovered from part 2, head on over to part 3 for the epic conclusion…or something.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div id=&#34;references&#34; class=&#34;section level2 unnumbered&#34;&gt;
