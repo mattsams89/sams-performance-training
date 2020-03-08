@@ -45,8 +45,7 @@ output:
 <h3>It’s Predicting Time</h3>
 <p>Last time, we built a linear mixed model with the <code>lme4</code> package called <code>final model</code>. This model used two categorical fixed effects (season, phase within season) along with five grand mean centered numeric fixed effects (total distance, work rate, hi-speed running distance, time spent in drills, and total practice duration) to predict log transformed rpetl values. We further included athletes nested within season as random intercept effects in the model to reflect that we’re analyzing repeated-measures data where the magnitudes of the relationships between variables may differ between athletes and between seasons. I know that’s a bit of a mouthful, so seriously, go back and look at <a href="/post/2018-11-05-r-individual-monitoring-part-2/r-individual-monitoring-part-2/" target="_blank">part 2</a> if you’re not sure what I’m talking about. The model output is below.</p>
 <pre><code>## Linear mixed model fit by maximum likelihood  [&#39;lmerMod&#39;]
-## Formula: 
-## log.rpetl ~ (1 | season/athlete) + odometer + work.rate + hi.run +  
+## Formula: log.rpetl ~ (1 | season/athlete) + odometer + work.rate + hi.run +  
 ##     field.minutes + duration + season + phase
 ##    Data: rpe.scaled
 ## 
@@ -106,7 +105,7 @@ output:
 ## phasePRE     0.522  0.366
 ## convergence code: 0
 ## boundary (singular) fit: see ?isSingular</code></pre>
-<p>Under normal circumstances, you would probably be comparing several methods to model the relationship between external load metrics and rpetl. In that case, you would go through a cross-validation process similar to <span class="citation">[<a href="#ref-Carey_2016">1</a>]</span>, where you split your data into training and test sets to determine which method is most effective in predicting previously-unseen data. We’ll leave that for some other time, though. For now, let’s attempt to tackle a real-life problem: using our model, can we identify anomalous rpetl values? I’m going to split the data so that we’re attempting to predict rpetl values for the final three weeks of the 2017 season. I’ll also re-create the model based on this trimmed dataset.</p>
+<p>Under normal circumstances, you would probably be comparing several methods to model the relationship between external load metrics and rpetl. In that case, you would go through a cross-validation process similar to <span class="citation">[<a href="#ref-Carey_2016" role="doc-biblioref">1</a>]</span>, where you split your data into training and test sets to determine which method is most effective in predicting previously-unseen data. We’ll leave that for some other time, though. For now, let’s attempt to tackle a real-life problem: using our model, can we identify anomalous rpetl values? I’m going to split the data so that we’re attempting to predict rpetl values for the final three weeks of the 2017 season. I’ll also re-create the model based on this trimmed dataset.</p>
 <pre class="r"><code># Create a training set
 training.data &lt;- rpe.scaled[date &lt; &quot;2017-10-16&quot;]
 
@@ -285,7 +284,7 @@ Daniel Thompson
 </tr>
 </tbody>
 </table>
-<p>Notice the predictions aren’t spot-on. We can quantify our model’s prediction error at both the group level and individual level. Model error is typically reported as mean absolute error (MAE) or root mean square error (RMSE). <span class="citation">[<a href="#ref-Ward_2018">3</a>]</span> recommend using a combination of the between-subject and within-subject RMSE (a.k.a. root mean square deviation) to set limits and confidence intervals for truly anomalous prediction errors. A drawback to RMSE is that it penalizes outliers more heavily compared to MAE. Since we’re interested in identifying outliers in this case, we might examine the MAE instead. But in the words of the Old El Paso commercial, “Por que no los dos?” We can examine both approaches pretty easily with the <code>caret</code> package.</p>
+<p>Notice the predictions aren’t spot-on. We can quantify our model’s prediction error at both the group level and individual level. Model error is typically reported as mean absolute error (MAE) or root mean square error (RMSE). <span class="citation">[<a href="#ref-Ward_2018" role="doc-biblioref">3</a>]</span> recommend using a combination of the between-subject and within-subject RMSE (a.k.a. root mean square deviation) to set limits and confidence intervals for truly anomalous prediction errors. A drawback to RMSE is that it penalizes outliers more heavily compared to MAE. Since we’re interested in identifying outliers in this case, we might examine the MAE instead. But in the words of the Old El Paso commercial, “Por que no los dos?” We can examine both approaches pretty easily with the <code>caret</code> package.</p>
 <pre class="r"><code># Group RMSE
 training.data[, .(group.RMSE = RMSE(prediction, rpetl))]</code></pre>
 <pre><code>##    group.RMSE
@@ -410,7 +409,7 @@ training.data[, .(individual.MAE = MAE(prediction, rpetl)), by = athlete]</code>
 ## 53:            Ron Quintana       42.21368
 ## 54:     Samuel Llanas Brito       25.39538
 ##                     athlete individual.MAE</code></pre>
-<p>It’s pretty interesting to examine the spread of the prediction errors among athletes. I would wager we could improve the model’s predictive accuracy by accounting for pre-training wellness, previous match outcome, injury status, MD minus, and other contextual factors, but I think a RMSE of ~ 72 units (range 33 - 118) and MAE of 51 units (range 25 - 81) will be acceptable for today’s example. Further, an approach similar to <span class="citation">[<a href="#ref-Vandewiele_2017">2</a>]</span>, where anomalous points produced by sickness and injury are retroactively removed, might be another way to improve the model’s predictive ability. Unfortunately, we didn’t collect contextual data like that, so we’re stuck with what we have.</p>
+<p>It’s pretty interesting to examine the spread of the prediction errors among athletes. I would wager we could improve the model’s predictive accuracy by accounting for pre-training wellness, previous match outcome, injury status, MD minus, and other contextual factors, but I think a RMSE of ~ 72 units (range 33 - 118) and MAE of 51 units (range 25 - 81) will be acceptable for today’s example. Further, an approach similar to <span class="citation">[<a href="#ref-Vandewiele_2017" role="doc-biblioref">2</a>]</span>, where anomalous points produced by sickness and injury are retroactively removed, might be another way to improve the model’s predictive ability. Unfortunately, we didn’t collect contextual data like that, so we’re stuck with what we have.</p>
 </div>
 </div>
 <div id="identifying-anomalies" class="section level2">

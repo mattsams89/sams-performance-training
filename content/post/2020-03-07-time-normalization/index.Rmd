@@ -1,0 +1,131 @@
+---
+title: Time Normalization of Force-Time Curves
+author: Matt
+date: '2020-03-07'
+slug: r-time-normalization
+categories:
+  - R
+tags:
+  - athlete monitoring
+  - data interpolation
+subtitle: ''
+summary: 'Standardizing your curve lengths'
+authors: []
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: yes
+output:
+  blogdown::html_page
+---
+
+```{r setup, include=FALSE}
+library(data.table)
+library(plotly)
+```
+
+## Time Normalization
+
+[Dylan Hicks](https://twitter.com/DylHicks){target="_blank"} emailed me recently about "time normalization" of vertical jump data. If you're unfamiliar, time normalization (see [here](https://www.researchgate.net/publication/286907617_Force-time_curve_comparison_between_weightlifting_derivatives{target="_blank"}) for an example)--better known as interpolation--involves re-sampling a known-length data set to a new length. 
+
+Like the paper I linked above, a common reason for performing time normalization is to standardize a data set's length prior to performing comparisons. For example, say we want to compare an athlete's SJ and CMJ force-time characteristics at multiple external loads (0kg, 10kg, and 20kg). Before even looking at the [data](jump_data.csv), we know the trial lengths will differ between jump types and the duration will increase with increasing load. In the linked data, the trials range from 280ms - 955ms. Apples-to-apples curve comparisons aren't really possible with the raw data since they're different lengths, but we can interpolate new standard-length curves (e.g., 101 data points to represent 0% - 100% of the jump) to overcome our length discrepancy problem.
+
+### Interpolation in R
+
+The great thing about R is that there's a function for everything (or you can write your own, but that's beside the point). In the case of interpolation, we're going to rely on the `approx()` function. `approx()` performs linear interpolation of the data (i.e. it draws a line through each pair of data points and estimates the value at the new location), although you can implement other interpolation methods (e.g. spline or cubic) by calling their respective functions (`spline()` and `pracma::pchip()`, respectively). I'm going to assume you're sampling at a high enough frequency that linear vs. polynomial interpolation isn't a huge factor...and by huge factor, I mean the interpolated force values aren't statistically or practically different from one another. I'm unaware of any papers that have empirically investigated this (or the sampling frequency at which the two methods *do* produce different values), but the data I've included here (sampled at 1000 Hz) are virtually identical for both `approx()` and `spline()`. Maybe the enterprising among you can publish a paper on it and list me in the acknowledgements. :)
+
+Anyway, the approx function is pretty straightforward:
+```{r}
+args(approx)
+```
+
+We need to provide `approx()` with values for the arguments `x`, `y`, and `n`. `x` and `y` are same-length vectors (e.g. time and force or index value and force), while `n` is the number of points we want to interpolate our data to. Using the data I linked above, let's walk through the process. First, we need to import our data.
+```{r}
+# fread is from the data.table package and is much faster than read.csv when reading large amounts of data
+jump_data <- fread("jump_trials.csv")
+
+# Data aren't displayed due to the size of the data frame
+```
+
+It's worth noting the example data are organized in a pretty peculiar manner. I created this data set probably five years ago when I was still an R newbie, so don't judge me too harshly. Let's start off by putting things in a saner format.
+
+```{r}
+# Again, transpose() comes from data.table
+jump_data <- transpose(jump_data)
+
+# Alternatively, using base R
+alt_transpose_1 <- data.frame(t(jump_data))
+
+# Or piping via the tidyverse
+alt_transpose_2 <- jump_data %>%
+  t %>%
+  data.frame
+```
+
+With our shiny new long data in hand, let's interpolate some new values. Remember, we need `x` (the locations of `y`, e.g. time or index location), `y` (the data), and `n` (the new length). Let's start off by interpolating trial 1 (V1 or X1 depending on whether you used `transpose()` or `t()` above) to a length of 101 points (0% - 100% of the trial).
+
+```{r}
+approx(1:length(jump_data$V1), jump_data$V1, n = 101)
+```
+
+You'll notice I didn't add a time column to the data prior to using `approx()`. Instead, I used the index locations of the points via `1:length(jump_data$V1)`. Using either index location or a user-defined time column is perfectly fine and won't affect the results. You'll also notice `approx()` returns interpolated values for both `x` and `y`. We're only concerned with `y`, however, so you should adjust the above function slightly:
+
+```{r}
+approx(1:length(jump_data$V1), jump_data$V1, n = 101)$y
+```
+
+Let's plot the interpolated data against the raw data.
+```{r}
+interpolated_data <- approx(1:length(jump_data$V1), 
+                            jump_data$V1, 
+                            n = 101)$y
+
+plot_ly() %>%
+  add_lines(data = jump_data,
+            x = ~1:length(V1),
+            y = ~V1,
+            name = "Raw") %>%
+  add_lines(x = 1:length(interpolated_data),
+            y = interpolated_data,
+            name = "Interpolated")
+```
+
+Typically, we want to time normalize multiple trials. Thankfully, R makes this a cakewalk with `lapply()`.
+
+```{r}
+lapply_interpolation <- data.frame(lapply(jump_data,
+                                          function(x) approx(1:length(x),
+                                                             x,
+                                                             n = 101)$y))
+```
+
+Or if you're a `data.table` user...
+```{r}
+data_table_interpolate <- jump_data[, lapply(.SD,
+                                             function(x) approx(1:length(x),
+                                                                x,
+                                                                n = 101)$y)]
+```
+
+In either case, enjoy your shiny new time normalized data!
+```{r echo=FALSE}
+normalized_data <- jump_data[, lapply(.SD,
+                                      function(x) approx(1:length(x),
+                                                         x,
+                                                         n = 101)$y)]
+
+p <- plot_ly(data = normalized_data,
+             x = 1:nrow(normalized_data))
+
+for(i in 1:15){
+  p <- add_lines(p,
+                 y = normalized_data[[i]],
+                 name = paste("Trial", i))
+}
+
+p
+```
+
+## Wrapping Up
+This post is a bit more off the cuff than usual and assumes some basic to intermediate proficiency in R, but hopefully it's helpful to some of you in the sports science Twitterverse. Feel free to message me via [email](mailto:samsperformancetraining@gmail.com) or [Twitter](https://twitter.com/DrMattSams) if you run into problems!

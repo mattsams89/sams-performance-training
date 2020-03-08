@@ -51,7 +51,7 @@ Alright, so maybe I’m a liar and part 2 took…a while…to come to fruition. 
 </div>
 <div id="a-refresher" class="section level2">
 <h2>A Refresher</h2>
-<p>I started off last time by mentioning “Putting the ‘I’ Back in Team” <span class="citation">[<a href="#ref-Ward_2018">6</a>]</span>. If you haven’t read it, I would recommend starting there before going any further. There were three topics of conversation in the paper: MBI (Imma let everyone finish arguing before wading into that), SPC (last post), and a version of anomaly detection via mixed modeling (this post). If you’re interested in further background information on what I’ll be discussing today, here are the papers that originally sent me down the rabbit hole: <span class="citation">[<a href="#ref-Bartlett_2017">1</a>,<a href="#ref-Carey_2016">2</a>,<a href="#ref-Vandewiele_2017">5</a>]</span>. Now, you’ll probably look at those papers and say, “Matt, those have nothing to do with mixed models,” and you wouldn’t be wrong. But they gave me some ideas for model building and how to define an outlier/anomaly (and next post will probably look at using non-linear methods to predict sRPE) so give them a read if you feel so inclined.</p>
+<p>I started off last time by mentioning “Putting the ‘I’ Back in Team” <span class="citation">[<a href="#ref-Ward_2018" role="doc-biblioref">6</a>]</span>. If you haven’t read it, I would recommend starting there before going any further. There were three topics of conversation in the paper: MBI (Imma let everyone finish arguing before wading into that), SPC (last post), and a version of anomaly detection via mixed modeling (this post). If you’re interested in further background information on what I’ll be discussing today, here are the papers that originally sent me down the rabbit hole: <span class="citation">[<a href="#ref-Bartlett_2017" role="doc-biblioref">1</a>,<a href="#ref-Carey_2016" role="doc-biblioref">2</a>,<a href="#ref-Vandewiele_2017" role="doc-biblioref">5</a>]</span>. Now, you’ll probably look at those papers and say, “Matt, those have nothing to do with mixed models,” and you wouldn’t be wrong. But they gave me some ideas for model building and how to define an outlier/anomaly (and next post will probably look at using non-linear methods to predict sRPE) so give them a read if you feel so inclined.</p>
 </div>
 <div id="anomaly-detection" class="section level2">
 <h2>Anomaly Detection</h2>
@@ -61,27 +61,27 @@ The concept of anomaly detection is pretty straightforward: Given a dataset, can
 <p><img src="both-worlds.png" /></p>
 <div id="rm-anova-vs.-mixed-modeling" class="section level3">
 <h3>RM ANOVA vs. Mixed Modeling</h3>
-<p>In the case of longitudinal analyses, mixed models (or you might see them called linear mixed models) are very similar to the garden-variety repeated-measures ANOVA you’re likely familiar with: a model is built to predict a dependent variable from an independent variable / series of independent variables (between-subjects effects, now called fixed effects) while also accounting for individual variation (within-subjects effects, now part of the random effects). There are some distinct differences between the two appraoches, though. For one, mixed models don’t require complete or balanced datasets. That is, athletes with missing data won’t need to be thrown out or have missing values imputed. This fact alone makes mixed models incredibly powerful tools for model building in sports science. Another important difference between the two approaches is how random effects work. In RM ANOVA, we can specify we’re analyzing data for the same individuals over time, but that’s about it. This can be a problem in the data we collect, where differences can exist between phases of the season (pre-season vs. non-conference vs. conference in the case of college sports) or between seasons (different playstyles, maturation, improved fitness levels, new coach, etc.). RM ANOVA isn’t able to account for this clustering or nesting of variables (note: we can model the interaction between these variables via fixed effects, but that’s a bit different), whereas mixed model random effects are. And let me tell you, random effects can get pretty complicated with especially complex designs, but I’ll leave that for someone smarter to explain. For instance, you can check out <span class="citation">[<a href="#ref-Field_2012">3</a>]</span> or <span class="citation">[<a href="#ref-Gelman_2006">4</a>]</span>. The latter contains everything you could ever want to know about mixed models and more…much more, while chapters 13, 14, and 19 of <span class="citation">[<a href="#ref-Field_2012">3</a>]</span> will equip you with what you need to know in an easier to digest format.</p>
+<p>In the case of longitudinal analyses, mixed models (or you might see them called linear mixed models) are very similar to the garden-variety repeated-measures ANOVA you’re likely familiar with: a model is built to predict a dependent variable from an independent variable / series of independent variables (between-subjects effects, now called fixed effects) while also accounting for individual variation (within-subjects effects, now part of the random effects). There are some distinct differences between the two appraoches, though. For one, mixed models don’t require complete or balanced datasets. That is, athletes with missing data won’t need to be thrown out or have missing values imputed. This fact alone makes mixed models incredibly powerful tools for model building in sports science. Another important difference between the two approaches is how random effects work. In RM ANOVA, we can specify we’re analyzing data for the same individuals over time, but that’s about it. This can be a problem in the data we collect, where differences can exist between phases of the season (pre-season vs. non-conference vs. conference in the case of college sports) or between seasons (different playstyles, maturation, improved fitness levels, new coach, etc.). RM ANOVA isn’t able to account for this clustering or nesting of variables (note: we can model the interaction between these variables via fixed effects, but that’s a bit different), whereas mixed model random effects are. And let me tell you, random effects can get pretty complicated with especially complex designs, but I’ll leave that for someone smarter to explain. For instance, you can check out <span class="citation">[<a href="#ref-Field_2012" role="doc-biblioref">3</a>]</span> or <span class="citation">[<a href="#ref-Gelman_2006" role="doc-biblioref">4</a>]</span>. The latter contains everything you could ever want to know about mixed models and more…much more, while chapters 13, 14, and 19 of <span class="citation">[<a href="#ref-Field_2012" role="doc-biblioref">3</a>]</span> will equip you with what you need to know in an easier to digest format.</p>
 </div>
 </div>
 <div id="building-a-model" class="section level2">
 <h2>Building a Model</h2>
 <p>As always, it’s much easier to show than tell with this stuff, so how about an example. You can find the data for this post <a href="prediction-data.csv">here</a>.</p>
 <pre><code>## # A tibble: 2,930 x 13
-##    athlete date       season session activity field.minutes odometer
-##    &lt;fct&gt;   &lt;date&gt;     &lt;fct&gt;    &lt;int&gt; &lt;fct&gt;            &lt;dbl&gt;    &lt;int&gt;
-##  1 Jonath~ 2014-08-13 Fall ~       1 Soccer 1          75.3     7201
-##  2 Dhaki ~ 2014-08-13 Fall ~       1 Soccer 1          69.5     7300
-##  3 Corey ~ 2014-08-13 Fall ~       1 Soccer 1          76.6     7586
-##  4 Issac ~ 2014-08-13 Fall ~       1 Soccer 1          80.7     3880
-##  5 Phoeni~ 2014-08-13 Fall ~       1 Soccer 1          59.1     5774
-##  6 Carrol~ 2014-08-13 Fall ~       1 Soccer 1          80.7     7807
-##  7 Neulyn~ 2014-08-13 Fall ~       1 Soccer 1          69.6     7617
-##  8 Jonath~ 2014-08-14 Fall ~       1 Soccer 1          82.3     3962
-##  9 Bobby ~ 2014-08-14 Fall ~       1 Soccer 1          82.1     3792
-## 10 Daniel~ 2014-08-14 Fall ~       1 Soccer 1          79.3     3671
-## # ... with 2,920 more rows, and 6 more variables: work.rate &lt;dbl&gt;,
-## #   plyr.ld &lt;int&gt;, hi.run &lt;int&gt;, duration &lt;int&gt;, rpetl &lt;int&gt;, phase &lt;fct&gt;</code></pre>
+##    athlete date       season session activity field.minutes odometer work.rate
+##    &lt;fct&gt;   &lt;date&gt;     &lt;fct&gt;    &lt;int&gt; &lt;fct&gt;            &lt;dbl&gt;    &lt;int&gt;     &lt;dbl&gt;
+##  1 Jonath~ 2014-08-13 Fall ~       1 Soccer 1          75.3     7201      95.6
+##  2 Dhaki ~ 2014-08-13 Fall ~       1 Soccer 1          69.5     7300     105. 
+##  3 Corey ~ 2014-08-13 Fall ~       1 Soccer 1          76.6     7586      99  
+##  4 Issac ~ 2014-08-13 Fall ~       1 Soccer 1          80.7     3880      48.1
+##  5 Phoeni~ 2014-08-13 Fall ~       1 Soccer 1          59.1     5774      97.7
+##  6 Carrol~ 2014-08-13 Fall ~       1 Soccer 1          80.7     7807      96.8
+##  7 Neulyn~ 2014-08-13 Fall ~       1 Soccer 1          69.6     7617     109. 
+##  8 Jonath~ 2014-08-14 Fall ~       1 Soccer 1          82.3     3962      48.1
+##  9 Bobby ~ 2014-08-14 Fall ~       1 Soccer 1          82.1     3792      46.2
+## 10 Daniel~ 2014-08-14 Fall ~       1 Soccer 1          79.3     3671      46.3
+## # ... with 2,920 more rows, and 5 more variables: plyr.ld &lt;int&gt;, hi.run &lt;int&gt;,
+## #   duration &lt;int&gt;, rpetl &lt;int&gt;, phase &lt;fct&gt;</code></pre>
 <table>
 <thead>
 <tr>
@@ -539,7 +539,7 @@ PRE
 </tr>
 </tbody>
 </table>
-<p>The full file contains four seasons’ worth of practice sRPE and GPS data. I’ve already done some data cleaning to remove data entry errors (about 40 records total across the four seasons; most were games incorrectly coded as practice), so you should be cognizant of the fact your data won’t always be this “pretty.” Consistent data collection and entry protocols can help mitigate some of these problems, but it’s always good to double check your data prior to modeling or making any decisions based on your models. We’ll use the data to build and test a predictive model for sRPE-derived training load (sRPE * duration; rpetl in the file) before applying it similarly to <span class="citation">[<a href="#ref-Ward_2018">6</a>]</span>.</p>
+<p>The full file contains four seasons’ worth of practice sRPE and GPS data. I’ve already done some data cleaning to remove data entry errors (about 40 records total across the four seasons; most were games incorrectly coded as practice), so you should be cognizant of the fact your data won’t always be this “pretty.” Consistent data collection and entry protocols can help mitigate some of these problems, but it’s always good to double check your data prior to modeling or making any decisions based on your models. We’ll use the data to build and test a predictive model for sRPE-derived training load (sRPE * duration; rpetl in the file) before applying it similarly to <span class="citation">[<a href="#ref-Ward_2018" role="doc-biblioref">6</a>]</span>.</p>
 <p><img src="gps-output.png" />
 If you’ve ever seen a GPS output file, you’ll know they can be pretty overwhelming. When I was with the soccer team, Catapult Sprint could spit out something like 250 variables (I think OpenField has even more). We exported 75; we actually looked at 7. Those other 70-ish variables were of the just-in-case variety–the variables you <em>may</em> want to look at one day, but realistically you know you’ll never give them a second glance. But hey, you have them. Anyway, of those seven variables, research has shown there’s a strong correlation between sRPE, total distance, and Player Load (PL) and a nearly perfect correlation between total distance and PL. We used both when it came to progamming our practice sessions because they do provide slightly different information, but from a model-building standpoint the nearly perfect correlation (aka, multicollinearity) between total distance and PL is problematic. It will bias the model coefficients and affect our ability to interpret the model and individual variable importance within the model. So step one in our process will be to examine the correlation coefficients between the variables in our dataset. We can examine the relationships between our variables very easily with <code>cor()</code> from the base stats package and the <code>corrplot</code> package.</p>
 <pre class="r"><code># import the data
@@ -632,10 +632,10 @@ summary(random.intercept.model)</code></pre>
 <p>In the above model, we’ve defined athlete nested within season as a random intercept effect. That means the model assumes the slope of the relationship between the predictors and sRPE is the same across athletes, but the intercept of the model for each athlete is in a different location each season. This makes sense when you think about it. We know sRPE is a “global” indicator of training intensity; that is, it’s affected by both the physiological and psychological state of the athlete (fitness level, fatigue, outside stressors, etc.). So we would expect the resultant rpetl to differ in magnitude between athletes and to differ within athletes across seasons. We can see this in the example plot below. Notice a majority of the athletes’ regression lines are in different locations.</p>
 <p><img src="/post/2018-11-05-r-individual-monitoring-part-2/index_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 <p>We could also have a random slope-only model. In that case, the slope of the relationship between the predictors and the DV is allowed to vary, whereas the intercepts are not. In reality, this type of model would make little sense most of the time as differences in slopes would typically lead to differences in intercepts as well.</p>
-<p>And finally, we can model both random slopes and random intercepts. In this case, both the level and slope of the relationship are allowed to differ. There is some evidence to support this approach as <span class="citation">[<a href="#ref-Bartlett_2017">1</a>]</span> showed variable importance differs across athletes, but modeling something like that is well beyond an introduction to the method. We’ll stick to a random intercept-only model for today.</p>
+<p>And finally, we can model both random slopes and random intercepts. In this case, both the level and slope of the relationship are allowed to differ. There is some evidence to support this approach as <span class="citation">[<a href="#ref-Bartlett_2017" role="doc-biblioref">1</a>]</span> showed variable importance differs across athletes, but modeling something like that is well beyond an introduction to the method. We’ll stick to a random intercept-only model for today.</p>
 <div id="adding-fixed-effects" class="section level4">
 <h4>Adding Fixed Effects</h4>
-<p>Model building is a pretty controversial subject. Different approaches exist, including entry of all variables into the model at once, sequential entry of variables into the model, and stepwise entry and deletion of the variables to find the model of best fit. The latter is especially controversial and can be seen as fishing for the best model. It is possible for this approach to over-fit the data and to make little sense from a practical standpoint (statistical significance is prioritized over practical significance), but it tends to be the go-to approach in building predictive models. We can overcome this approach’s shortcomings, though, by 1) using variables that have empirical support (e.g. total distance, heart rate load, pre-training wellness, etc.), 2) performing stepwise analysis on blocks of fixed effects (aka, feature sets; see <span class="citation">[<a href="#ref-Carey_2016">2</a>]</span> for an example), and 3) using cross-validation (siccing our models on previously unseen data to compare their abilities to generalize to new data). We’ll get into cross-validation some other time.</p>
+<p>Model building is a pretty controversial subject. Different approaches exist, including entry of all variables into the model at once, sequential entry of variables into the model, and stepwise entry and deletion of the variables to find the model of best fit. The latter is especially controversial and can be seen as fishing for the best model. It is possible for this approach to over-fit the data and to make little sense from a practical standpoint (statistical significance is prioritized over practical significance), but it tends to be the go-to approach in building predictive models. We can overcome this approach’s shortcomings, though, by 1) using variables that have empirical support (e.g. total distance, heart rate load, pre-training wellness, etc.), 2) performing stepwise analysis on blocks of fixed effects (aka, feature sets; see <span class="citation">[<a href="#ref-Carey_2016" role="doc-biblioref">2</a>]</span> for an example), and 3) using cross-validation (siccing our models on previously unseen data to compare their abilities to generalize to new data). We’ll get into cross-validation some other time.</p>
 <p>We already have our block of fixed effects to test (season, training phase, time spent active in drills [field.minutes], total distance, work rate, hi-speed running distance [&gt; 14.4 kph], and total practice duration), so we can begin adding them to the model and testing their overall effect. Updating models can be done a couple different ways in R. For one, you can manually write the code each time (see the above <code>lme4</code> code as an example), or you can leverage the <code>update()</code> function. I’ll be using <code>update()</code>, so here’s the skinny on how it works: <code>update()</code> needs two pieces of information, 1) the model you want to update and 2) how you want to update it. We defined the random intercept model earlier, so we would tell the function we want to update random.intercept.model by calling <code>update(random.intercept.model)</code>, then spelling out how we want to update it. The syntax is the same as what we used above with the LHS being the dependent variable and the RHS being the predictor variables. So for instance, if we wanted to add total distance to the model, we would call</p>
 <pre class="r"><code># Using update() to update statistical models
 total.distance.model &lt;- update(random.intercept.model, .~. + odometer)</code></pre>
@@ -649,15 +649,15 @@ anova(random.intercept.model, total.distance.model)</code></pre>
 ## Models:
 ## random.intercept.model: rpetl ~ (1 | season/athlete)
 ## total.distance.model: rpetl ~ (1 | season/athlete) + odometer
-##                        Df   AIC   BIC logLik deviance  Chisq Chi Df
-## random.intercept.model  4 36342 36366 -18167    36334              
-## total.distance.model    5 34539 34569 -17265    34529 1805.3      1
-##                        Pr(&gt;Chisq)    
-## random.intercept.model               
-## total.distance.model    &lt; 2.2e-16 ***
+##                        Df   AIC   BIC logLik deviance  Chisq Chi Df Pr(&gt;Chisq)
+## random.intercept.model  4 36342 36366 -18167    36334                         
+## total.distance.model    5 34539 34569 -17265    34529 1805.3      1  &lt; 2.2e-16
+##                           
+## random.intercept.model    
+## total.distance.model   ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
-<p>There are four main things you can examine in this output: 1) the AIC, 2) the BIC, 3) the log-likelihood, and 4) the p-value for the chi-squared test comparing the log-likelihood of the two models. AIC, BIC, and logLik help us understand how well the models fit the data; values closer to zero are better. The change in logLik allows us determine if the change in the model fit is statistically significant (see <span class="citation">[<a href="#ref-Field_2012">3</a>]</span> if you’re interested in the math), although there are two important caveats. 1) the models must be fit with maximum likelihood, not restricted maximum likelihood (REML = FALSE), and 2) subsequent models should be nested. That is, later models should contain all the variables from previous models (this will be clearer in a second). We can see from the above output that inclusion of total distance as a fixed effect statistically improved the model’s fit of the data with a p-value of 2 x 10^(-16). Let’s go ahead and add work rate, hi-speed running distance, time spent in drills, and total practice duration to the model and compare each step along the way.</p>
+<p>There are four main things you can examine in this output: 1) the AIC, 2) the BIC, 3) the log-likelihood, and 4) the p-value for the chi-squared test comparing the log-likelihood of the two models. AIC, BIC, and logLik help us understand how well the models fit the data; values closer to zero are better. The change in logLik allows us determine if the change in the model fit is statistically significant (see <span class="citation">[<a href="#ref-Field_2012" role="doc-biblioref">3</a>]</span> if you’re interested in the math), although there are two important caveats. 1) the models must be fit with maximum likelihood, not restricted maximum likelihood (REML = FALSE), and 2) subsequent models should be nested. That is, later models should contain all the variables from previous models (this will be clearer in a second). We can see from the above output that inclusion of total distance as a fixed effect statistically improved the model’s fit of the data with a p-value of 2 x 10^(-16). Let’s go ahead and add work rate, hi-speed running distance, time spent in drills, and total practice duration to the model and compare each step along the way.</p>
 <pre class="r"><code>model.1 &lt;- update(total.distance.model, .~. + work.rate)</code></pre>
 <pre><code>## Warning: Some predictor variables are on very different scales: consider
 ## rescaling</code></pre>
@@ -680,18 +680,18 @@ anova(random.intercept.model, total.distance.model)</code></pre>
 ## model.3:     field.minutes
 ## model.4: rpetl ~ (1 | season/athlete) + odometer + work.rate + hi.run + 
 ## model.4:     field.minutes + duration
-##                      Df   AIC   BIC logLik deviance   Chisq Chi Df
-## total.distance.model  5 34539 34569 -17265    34529               
-## model.1               6 34456 34492 -17222    34444  84.818      1
-## model.2               7 34397 34439 -17192    34383  61.045      1
-## model.3               8 34365 34413 -17175    34349  33.916      1
-## model.4               9 33701 33755 -16842    33683 665.894      1
-##                      Pr(&gt;Chisq)    
-## total.distance.model               
-## model.1               &lt; 2.2e-16 ***
-## model.2               5.578e-15 ***
-## model.3               5.756e-09 ***
-## model.4               &lt; 2.2e-16 ***
+##                      Df   AIC   BIC logLik deviance   Chisq Chi Df Pr(&gt;Chisq)
+## total.distance.model  5 34539 34569 -17265    34529                          
+## model.1               6 34456 34492 -17222    34444  84.818      1  &lt; 2.2e-16
+## model.2               7 34397 34439 -17192    34383  61.045      1  5.578e-15
+## model.3               8 34365 34413 -17175    34349  33.916      1  5.756e-09
+## model.4               9 33701 33755 -16842    33683 665.894      1  &lt; 2.2e-16
+##                         
+## total.distance.model    
+## model.1              ***
+## model.2              ***
+## model.3              ***
+## model.4              ***
 ## ---
 ## Signif. codes:  0 &#39;***&#39; 0.001 &#39;**&#39; 0.01 &#39;*&#39; 0.05 &#39;.&#39; 0.1 &#39; &#39; 1</code></pre>
 <p>Each subsequent model is a statistically significant improvement over the previous. Let’s further add season and phase within season as fixed effects.</p>
@@ -787,7 +787,7 @@ anova(random.intercept.model, total.distance.model)</code></pre>
 ## Some predictor variables are on very different scales: consider rescaling
 ## convergence code: 0
 ## boundary (singular) fit: see ?isSingular</code></pre>
-<p>From reading <a href="https://rpubs.com/jimsavage/scale_issues" target="_blank">this post</a> it seems this error can happen for a few different reasons, including fixed effects that are magnitudes different from one another and model coefficients that are magnitudes different from one another. If you look at the data and the model output, check and check. It would be a good idea to center our variables then. For a discussion on centering, see <span class="citation">[<a href="#ref-Field_2012">3</a>]</span>; to see it in practice, see <span class="citation">[<a href="#ref-Carey_2016">2</a>]</span>. I’m going to use grand mean centering (centering on pooled data) of the fixed effects similar to R1 from <span class="citation">[<a href="#ref-Carey_2016">2</a>]</span>. I do want to preserve the fact that we’re examining data across multiple seasons, so I’ll be including <code>by = season</code> in the data centering call below.</p>
+<p>From reading <a href="https://rpubs.com/jimsavage/scale_issues" target="_blank">this post</a> it seems this error can happen for a few different reasons, including fixed effects that are magnitudes different from one another and model coefficients that are magnitudes different from one another. If you look at the data and the model output, check and check. It would be a good idea to center our variables then. For a discussion on centering, see <span class="citation">[<a href="#ref-Field_2012" role="doc-biblioref">3</a>]</span>; to see it in practice, see <span class="citation">[<a href="#ref-Carey_2016" role="doc-biblioref">2</a>]</span>. I’m going to use grand mean centering (centering on pooled data) of the fixed effects similar to R1 from <span class="citation">[<a href="#ref-Carey_2016" role="doc-biblioref">2</a>]</span>. I do want to preserve the fact that we’re examining data across multiple seasons, so I’ll be including <code>by = season</code> in the data centering call below.</p>
 <pre class="r"><code>rpe.scaled &lt;- rpe.data
 
 # Create scaled versions of each of the fixed effects
@@ -871,15 +871,14 @@ rpe.scaled[, c(&quot;field.minutes&quot;, &quot;odometer&quot;, &quot;work.rate&
 <pre class="r"><code>plot(lm(predict(scaled.model.6, rpe.scaled) ~ rpe.scaled$rpetl))</code></pre>
 <p><img src="/post/2018-11-05-r-individual-monitoring-part-2/index_files/figure-html/unnamed-chunk-15-2.png" width="672" /><img src="/post/2018-11-05-r-individual-monitoring-part-2/index_files/figure-html/unnamed-chunk-15-3.png" width="672" /><img src="/post/2018-11-05-r-individual-monitoring-part-2/index_files/figure-html/unnamed-chunk-15-4.png" width="672" /><img src="/post/2018-11-05-r-individual-monitoring-part-2/index_files/figure-html/unnamed-chunk-15-5.png" width="672" /></p>
 <p>Holy heteroscedasticity! That’s not what you want to see. If you’re unfamiliar, heteroscedasticity is more than just that one word your stats professor could never pronounce. One of the assumptions of linear models is that the model variance is consistent across all levels of the predictors. The fan-shaped residuals suggest this isn’t the case. Instead, as the predictors increase, the error in the prediction increases (variability in the athletes’ responses increases). That’s less than ideal when we’re attempting to predict rpetl. On the bright side, though, the Q-Q plot suggests the residuals are <em>relatively</em> normal.</p>
-<p>Given we’re dealing with heteroscedastic–but relatively normal–residuals, one way to correct heteroscedasticity in our model is transformation of the dependent variable. Since rpetl is positively skewed, our main options are log transformation and square root transformation. Both tend to be useful for “pulling in” the tail of a skewed distribution, but log transformation is the more common of the two in sports science research. <a href="http://www.sportsci.org/resource/stats/logtrans.html" target="_blank">Hopkins</a> goes into some detail as to why if you’re interested. Also, there’s some discussion on log transformation in chapter 5 of <span class="citation">[<a href="#ref-Field_2012">3</a>]</span>. Let’s add natural logged rpetl to the rpe.scaled data frame then re-run model 6. We’ll call this model final.model.</p>
+<p>Given we’re dealing with heteroscedastic–but relatively normal–residuals, one way to correct heteroscedasticity in our model is transformation of the dependent variable. Since rpetl is positively skewed, our main options are log transformation and square root transformation. Both tend to be useful for “pulling in” the tail of a skewed distribution, but log transformation is the more common of the two in sports science research. <a href="http://www.sportsci.org/resource/stats/logtrans.html" target="_blank">Hopkins</a> goes into some detail as to why if you’re interested. Also, there’s some discussion on log transformation in chapter 5 of <span class="citation">[<a href="#ref-Field_2012" role="doc-biblioref">3</a>]</span>. Let’s add natural logged rpetl to the rpe.scaled data frame then re-run model 6. We’ll call this model final.model.</p>
 <pre class="r"><code>rpe.scaled[, log.rpetl := log(rpetl)]
 
 final.model &lt;- update(scaled.model.6, log.rpetl ~.)</code></pre>
 <pre><code>## boundary (singular) fit: see ?isSingular</code></pre>
 <pre class="r"><code>summary(final.model)</code></pre>
 <pre><code>## Linear mixed model fit by maximum likelihood  [&#39;lmerMod&#39;]
-## Formula: 
-## log.rpetl ~ (1 | season/athlete) + odometer + work.rate + hi.run +  
+## Formula: log.rpetl ~ (1 | season/athlete) + odometer + work.rate + hi.run +  
 ##     field.minutes + duration + season + phase
 ##    Data: rpe.scaled
 ## 
