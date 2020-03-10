@@ -50,6 +50,8 @@ jump_data <- fread("jump_trials.csv")
 
 It's worth noting the example data are organized in a pretty peculiar manner. I created this data set probably five years ago when I was still an R newbie, so don't judge me too harshly. Let's start off by putting things in a saner format.
 
+**Edit: It's worth pointing out this step probably isn't necessary for your data. The data in this example are in wide format, meaning each row represents a trial. In most software that spits out force-time data, trials will be arranged by columns instead. Sorry for any confusion!**
+
 ```{r}
 # Again, transpose() comes from data.table
 jump_data <- transpose(jump_data)
